@@ -1,24 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import "./App.css";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+import Navbar from "./components/Navbar";
+import Dashboard from "./components/Dashboard";
+import Profile from "./components/Profile";
+import UserManagement from "./components/UserManagement";
+import { isAuthenticated, handleLogout } from "./services/api";
+
+function Home() {
+  const isLoggedIn = isAuthenticated();
+  const username = localStorage.getItem("username");
+  const roles = JSON.parse(localStorage.getItem("roles") || "[]");
+
+  useEffect(() => {
+    document.title = 'Trang chủ';
+  }, []);
+
+  const onLogout = () => {
+    handleLogout();
+    window.location.reload();
+  };
+
+  return (
+    <div className="home-container">
+      <h1>Hello</h1>
+    </div>
+  );
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<><Navbar /><Home /></>} />
+          <Route path="/login" element={<><Navbar /><Login /></>} />
+          <Route path="/signup" element={<><Navbar /><Signup /></>} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/users" element={<UserManagement />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
