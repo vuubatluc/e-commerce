@@ -54,7 +54,6 @@ function Signup() {
       });
 
       if (data.result) {
-        alert('Đăng ký thành công! Vui lòng đăng nhập.');
         navigate('/login');
       } else {
         setError(data.message || 'Đăng ký thất bại. Vui lòng thử lại!');

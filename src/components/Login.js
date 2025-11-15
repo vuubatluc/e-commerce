@@ -47,7 +47,6 @@ function Login() {
             
             // Kiểm tra nếu là ADMIN thì chuyển đến dashboard
             if (roles.includes('ADMIN')) {
-              alert('Đăng nhập thành công!');
               navigate('/dashboard');
               return;
             }
@@ -57,7 +56,6 @@ function Login() {
         }
 
         
-        alert('Đăng nhập thành công!');
         navigate('/');
       } else {
         setError(data.message || 'Tên đăng nhập hoặc mật khẩu không đúng!');
@@ -111,6 +109,9 @@ function Login() {
         </form>
 
         <div className="auth-footer">
+          <p className="forgot-password-link">
+            <Link to="/forgot-password">Quên mật khẩu?</Link>
+          </p>
           <p>Chưa có tài khoản? <Link to="/signup">Đăng ký ngay</Link></p>
         </div>
       </div>

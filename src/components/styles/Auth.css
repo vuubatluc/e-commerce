@@ -88,6 +88,99 @@
   text-decoration: underline;
 }
 
+.forgot-password-link {
+  margin-bottom: 10px;
+}
+
+.forgot-password-link a {
+  color: #3498db;
+  font-size: 14px;
+}
+
+.forgot-password-link a:hover {
+  text-decoration: underline;
+}
+
+/* Steps Indicator */
+.steps-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  padding: 0 10px;
+}
+
+.step {
+  flex: 1;
+  text-align: center;
+  padding: 10px 5px;
+  border-bottom: 3px solid #ddd;
+  color: #999;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.step.active {
+  border-bottom-color: #333;
+  color: #333;
+  font-weight: 600;
+}
+
+.step-description {
+  text-align: center;
+  color: #666;
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.step-description strong {
+  color: #333;
+}
+
+.otp-input {
+  text-align: center;
+  font-size: 24px;
+  letter-spacing: 8px;
+  font-weight: 600;
+}
+
+.resend-otp {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: #3498db;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+  padding: 5px;
+  transition: all 0.2s;
+}
+
+.link-button:hover {
+  text-decoration: underline;
+  color: #2980b9;
+}
+
+.link-button:disabled {
+  color: #999;
+  cursor: not-allowed;
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid #28a745;
+  font-size: 14px;
+}
+
 .error-message {
   background-color: #fee;
   color: #c33;

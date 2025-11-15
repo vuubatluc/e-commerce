@@ -1,53 +1,169 @@
-# Getting Started with Create React App
+# 🛒 E-Commerce Web Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Ứng dụng thương mại điện tử được xây dựng với React và Spring Boot, hỗ trợ xác thực JWT và quản lý người dùng dựa trên vai trò.
 
-## Available Scripts
+## 🚀 Tính năng
 
-In the project directory, you can run:
+### Xác thực & Phân quyền
+- ✅ Đăng ký tài khoản mới
+- ✅ Đăng nhập với JWT token
+- ✅ Phân quyền theo vai trò (Admin/User)
+- ✅ Tự động chuyển hướng dựa trên role
+- ✅ Quản lý hồ sơ cá nhân (xem/sửa thông tin)
 
-### `npm start`
+### Dashboard Admin
+- ✅ Giao diện dashboard riêng với navbar chuyên dụng
+- ✅ Thống kê tổng quan (người dùng, sản phẩm, đơn hàng, doanh thu)
+- ✅ Quản lý người dùng (xem/sửa/xóa)
+- ✅ Bảo vệ tài khoản Admin khỏi bị chỉnh sửa/xóa
+- ✅ Menu điều hướng: Tổng quan, Người dùng, Sản phẩm, Đơn hàng
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Giao diện người dùng
+- ✅ Navbar thông minh (tự động thay đổi theo role)
+- ✅ Dropdown menu với tùy chọn hồ sơ và đăng xuất
+- ✅ Thiết kế responsive trên mọi thiết bị
+- ✅ Theme trắng/xám hiện đại
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🛠️ Công nghệ sử dụng
 
-### `npm test`
+### Frontend
+- **React 19.2.0** - Thư viện UI
+- **React Router DOM 7.x** - Điều hướng SPA
+- **CSS3** - Styling với responsive design
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Backend
+- **Spring Boot** - REST API
+- **JWT** - Token-based authentication
+- **MySQL** - Cơ sở dữ liệu
 
-### `npm run build`
+## 📦 Cài đặt
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Yêu cầu
+- Node.js 16+ và npm
+- Spring Boot backend đang chạy tại `http://localhost:8080/api`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Các bước cài đặt
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. **Clone repository**
+```bash
+git clone https://github.com/vuubatluc/e-commerce.git
+cd e-commerce
+```
 
-### `npm run eject`
+2. **Cài đặt dependencies**
+```bash
+npm install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+3. **Chạy ứng dụng**
+```bash
+npm start
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Ứng dụng sẽ chạy tại [http://localhost:3000](http://localhost:3000)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 🔌 API Endpoints
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Authentication
+- `POST /api/auth/login` - Đăng nhập
+- `POST /api/auth/logout` - Đăng xuất
+- `POST /api/auth/introspect` - Kiểm tra token
 
-## Learn More
+### Users
+- `POST /api/users` - Tạo người dùng mới
+- `GET /api/users/myinfo` - Lấy thông tin người dùng hiện tại
+- `PUT /api/users/updatemyinfo` - Cập nhật thông tin cá nhân
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Admin - User Management
+- `GET /api/users` - Lấy danh sách tất cả người dùng
+- `GET /api/users/{id}` - Lấy thông tin chi tiết người dùng
+- `PUT /api/users/{id}` - Cập nhật thông tin người dùng
+- `DELETE /api/users/{id}` - Xóa người dùng
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📂 Cấu trúc thư mục
 
-### Code Splitting
+```
+src/
+├── components/
+│   ├── Dashboard.js          # Trang dashboard admin
+│   ├── DashboardNavbar.js    # Navbar cho dashboard
+│   ├── Login.js              # Trang đăng nhập
+│   ├── Signup.js             # Trang đăng ký
+│   ├── Navbar.js             # Navbar chính
+│   ├── Profile.js            # Trang hồ sơ cá nhân
+│   ├── UserManagement.js     # Quản lý người dùng (Admin)
+│   └── styles/               # CSS files
+│       ├── Auth.css
+│       ├── Dashboard.css
+│       ├── Profile.css
+│       └── UserManagement.css
+├── services/
+│   └── api.js                # Service layer cho API calls
+├── styles/
+│   ├── Navbar.css
+│   └── DashboardNavbar.css
+├── App.js                    # Main component & routing
+├── App.css                   # Global styles
+└── index.js                  # Entry point
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 🎨 Màu sắc
+
+- **Primary (Dashboard)**: `#2c3e50` - Xanh đậm
+- **Background**: `#f5f5f5` - Xám nhạt
+- **Text**: `#333` - Đen
+- **White**: `#ffffff` - Trắng
+- **Accent**: `#3498db` - Xanh dương
+
+## 👤 Tài khoản mẫu
+
+### Admin
+- Username: `admin`
+- Role: `ADMIN`
+
+### User
+- Username: `user`
+- Role: `USER`
+
+> Lưu ý: Tạo tài khoản thông qua trang Đăng ký hoặc liên hệ admin
+
+## 🔐 Bảo mật
+
+- JWT token được lưu trong `localStorage`
+- Token tự động gửi kèm trong header `Authorization: Bearer {token}`
+- Admin accounts được bảo vệ khỏi thao tác xóa/sửa
+- Route protection dựa trên role
+
+## 📱 Responsive Design
+
+- ✅ Desktop (1024px+)
+- ✅ Tablet (768px - 1024px)
+- ✅ Mobile (<768px)
+
+## 🚧 Tính năng sắp tới
+
+- [ ] Quản lý sản phẩm
+- [ ] Quản lý đơn hàng
+- [ ] Giỏ hàng
+- [ ] Thanh toán
+- [ ] Báo cáo và thống kê chi tiết
+- [ ] Upload ảnh đại diện
+- [ ] Email verification
+- [ ] Password recovery
+
+## 📄 License
+
+MIT License - Copyright (c) 2025
+
+## 👨‍💻 Tác giả
+
+**Vuu Bat Luc**
+- GitHub: [@vuubatluc](https://github.com/vuubatluc)
+
+---
+
+Made with ❤️ using React & Spring Boot
+
 
 ### Analyzing the Bundle Size
 
