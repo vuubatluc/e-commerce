@@ -28,13 +28,13 @@ function ForgotPassword() {
       const response = await authAPI.forgetPassword(email);
       
       if (response.code === 1000) {
-        setSuccess(response.result.message || 'Mã OTP đã được gửi đến email của bạn!');
+        setSuccess('Mã OTP đã được gửi đến email của bạn!');
         setTimeout(() => {
           setStep(2);
           setSuccess('');
         }, 2000);
       } else {
-        setError(response.message || 'Email không tồn tại trong hệ thống');
+        setError('Email không tồn tại trong hệ thống');
       }
     } catch (error) {
       console.error('Error sending OTP:', error);
@@ -66,7 +66,7 @@ function ForgotPassword() {
           setSuccess('');
         }, 1500);
       } else {
-        setError(response.message || 'Mã OTP không chính xác hoặc đã hết hạn');
+        setError('Mã OTP không chính xác hoặc đã hết hạn');
       }
     } catch (error) {
       console.error('Error verifying OTP:', error);
@@ -103,7 +103,7 @@ function ForgotPassword() {
           navigate('/login');
         }, 2000);
       } else {
-        setError(response.message || 'Không thể đặt lại mật khẩu');
+        setError('Không thể đặt lại mật khẩu');
       }
     } catch (error) {
       console.error('Error resetting password:', error);
@@ -125,7 +125,7 @@ function ForgotPassword() {
         setSuccess('Mã OTP mới đã được gửi đến email của bạn!');
         setTimeout(() => setSuccess(''), 3000);
       } else {
-        setError(response.message || 'Không thể gửi lại mã OTP');
+        setError('Không thể gửi lại mã OTP');
       }
     } catch (error) {
       console.error('Error resending OTP:', error);
