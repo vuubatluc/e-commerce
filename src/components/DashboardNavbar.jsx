@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { handleLogout } from '../services/api';
-import '../styles/DashboardNavbar.css';
+import './styles/DashboardNavbar.css';
 
 function DashboardNavbar() {
   const location = useLocation();
