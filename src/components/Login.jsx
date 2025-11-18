@@ -47,6 +47,7 @@ function Login() {
             
             // Kiểm tra nếu là ADMIN thì chuyển đến dashboard
             if (roles.includes('ADMIN')) {
+              alert("Đăng nhập thành công!");
               navigate('/dashboard');
               return;
             }
@@ -55,10 +56,10 @@ function Login() {
           console.error('Error fetching user info:', error);
         }
 
-        
+        alert("Đăng nhập thành công!");
         navigate('/');
       } else {
-        setError(data.message || 'Tên đăng nhập hoặc mật khẩu không đúng!');
+        setError('Tên đăng nhập hoặc mật khẩu không đúng!');
       }
     } catch (error) {
       console.error('Login error:', error);

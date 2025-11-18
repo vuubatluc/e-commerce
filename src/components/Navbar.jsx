@@ -6,6 +6,8 @@ import './styles/Navbar.css';
 function Navbar() {
   const isLoggedIn = isAuthenticated();
   const username = localStorage.getItem('username');
+  const roles = JSON.parse(localStorage.getItem('roles') || '[]');
+  const isUser = !roles.includes('ADMIN');
   const location = useLocation();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
@@ -36,6 +38,13 @@ function Navbar() {
         <ul className="navbar-menu">
           {isLoggedIn ? (
             <>
+              {isUser && (
+                <li className="navbar-item">
+                  <Link to="/cart" className="navbar-cart">
+                    Giỏ hàng
+                  </Link>
+                </li>
+              )}
               <li className="navbar-item user-dropdown" ref={dropdownRef}>
                 <button 
                   className="navbar-user" 
