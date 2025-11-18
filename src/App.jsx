@@ -1,50 +1,121 @@
-import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
-import ForgotPassword from "./components/ForgotPassword";
-import Navbar from "./components/Navbar";
-import Dashboard from "./components/Dashboard";
-import Profile from "./components/Profile";
-import UserManagement from "./components/UserManagement";
-import { isAuthenticated, handleLogout } from "./services/api";
 
-function Home() {
+// Pages
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
+import Profile from "./pages/Profile";
+
+// Admin Pages
+import Dashboard from "./pages/admin/Dashboard";
+import UserManagement from "./pages/admin/UserManagement";
+
+// Layouts
+import MainLayout from "./layouts/MainLayout";
+import DashboardLayout from "./layouts/DashboardLayout";
+
+// Utils
+import { isAuthenticated } from "./services/api";
+
+// Protected Route Component
+function ProtectedRoute({ children, requireAdmin = false }) {
   const isLoggedIn = isAuthenticated();
-  const username = localStorage.getItem("username");
   const roles = JSON.parse(localStorage.getItem("roles") || "[]");
+  const isAdmin = roles.includes("ADMIN");
 
-  useEffect(() => {
-    document.title = 'Trang chủ';
-  }, []);
+  if (!isLoggedIn) {
+    return <Navigate to="/login" replace />;
+  }
 
-  const onLogout = () => {
-    handleLogout();
-    window.location.reload();
-  };
+  if (requireAdmin && !isAdmin) {
+    return <Navigate to="/" replace />;
+  }
 
-  return (
-    <div className="home-container">
-      <h1>Hello</h1>
-    </div>
-  );
+  return children;
+}
+
+// Public Route Component (redirect if already logged in)
+function PublicRoute({ children }) {
+  const isLoggedIn = isAuthenticated();
+
+  if (isLoggedIn) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
 }
 
 function App() {
   return (
     <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<><Navbar /><Home /></>} />
-          <Route path="/login" element={<><Navbar /><Login /></>} />
-          <Route path="/signup" element={<><Navbar /><Signup /></>} />
-          <Route path="/forgot-password" element={<><Navbar /><ForgotPassword /></>} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/users" element={<UserManagement />} />
-        </Routes>
-      </div>
+      <Routes>
+        {/* Public Routes with MainLayout */}
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <PublicRoute>
+                <Signup />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <PublicRoute>
+                <ForgotPassword />
+              </PublicRoute>
+            }
+          />
+        </Route>
+
+        {/* Protected User Routes with MainLayout */}
+        <Route element={<MainLayout />}>
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
+
+        {/* Admin Routes with DashboardLayout */}
+        <Route element={<DashboardLayout />}>
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute requireAdmin>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/users"
+            element={
+              <ProtectedRoute requireAdmin>
+                <UserManagement />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
+
+        {/* 404 Not Found */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </Router>
   );
 }

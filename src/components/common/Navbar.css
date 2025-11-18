@@ -1,0 +1,278 @@
+/* Base Navbar Styles */
+.navbar {
+  padding: 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-container {
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  height: 60px;
+}
+
+.navbar-logo {
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.navbar-menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  gap: 1rem;
+}
+
+.navbar-menu-center {
+  flex: 1;
+  justify-content: center;
+}
+
+.navbar-item {
+  margin: 0;
+}
+
+.navbar-link {
+  text-decoration: none;
+  padding: 0.6rem 1rem;
+  border-radius: 5px;
+  transition: all 0.3s;
+  font-weight: 500;
+  display: inline-block;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.navbar-link:hover {
+  transform: translateY(-2px);
+}
+
+.navbar-user {
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.navbar-cart {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.navbar-dropdown {
+  position: relative;
+}
+
+.navbar-user-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.navbar-back-link {
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: all 0.3s;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 200px;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 12px 20px;
+  text-align: left;
+  text-decoration: none;
+  color: #333;
+  background: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
+.logout-item {
+  border-top: 1px solid #f0f0f0;
+  color: #ff4757;
+}
+
+.logout-item:hover {
+  background-color: #fff5f5;
+}
+
+/* Default Variant (Home/User) */
+.navbar-default {
+  background: white;
+}
+
+.navbar-default .navbar-logo {
+  color: #333;
+  font-size: 24px;
+}
+
+.navbar-default .navbar-logo:hover {
+  transform: scale(1.05);
+}
+
+.navbar-default .navbar-link {
+  color: #333;
+}
+
+.navbar-default .navbar-link:hover {
+  background-color: #f0f0f0;
+}
+
+.navbar-default .navbar-link.active {
+  background-color: #e0e0e0;
+  font-weight: 600;
+}
+
+.navbar-default .navbar-user {
+  color: #333;
+  background-color: #f0f0f0;
+}
+
+.navbar-default .navbar-user:hover {
+  background-color: #e0e0e0;
+}
+
+/* Dashboard Variant */
+.navbar-dashboard {
+  background: #2c3e50;
+}
+
+.navbar-dashboard .navbar-logo {
+  color: white;
+}
+
+.navbar-dashboard .navbar-logo:hover {
+  opacity: 0.8;
+}
+
+.navbar-dashboard .navbar-link {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.navbar-dashboard .navbar-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.navbar-dashboard .navbar-link.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-weight: 600;
+}
+
+.navbar-dashboard .navbar-back-link {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.navbar-dashboard .navbar-back-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.navbar-dashboard .navbar-user {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-dashboard .navbar-user:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .navbar-container {
+    padding: 0 1rem;
+  }
+
+  .navbar-menu {
+    gap: 0.5rem;
+  }
+
+  .navbar-link {
+    padding: 0.5rem 0.75rem;
+    font-size: 13px;
+  }
+
+  .navbar-back-link {
+    padding: 0.5rem 0.75rem;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-container {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.5rem 1rem;
+  }
+
+  .navbar-logo {
+    font-size: 18px;
+  }
+
+  .navbar-menu {
+    gap: 0.5rem;
+  }
+
+  .navbar-menu-center {
+    order: 3;
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  .navbar-link {
+    font-size: 12px;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .navbar-user-section {
+    gap: 0.5rem;
+  }
+
+  .navbar-back-link {
+    font-size: 12px;
+  }
+}

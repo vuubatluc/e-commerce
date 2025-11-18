@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authAPI, userAPI } from '../services/api';
-import './styles/Auth.css';
+import { Input, Button, Alert, Card } from '../components/common';
+import '../assets/styles/Auth.css';
 
 function Login() {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ function Login() {
     password: ''
   });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -22,12 +24,14 @@ function Login() {
       [e.target.name]: e.target.value
     });
     setError('');
+    setSuccess('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccess('');
 
     try {
       const data = await authAPI.login(formData.username, formData.password);
@@ -47,8 +51,8 @@ function Login() {
             
             // Kiểm tra nếu là ADMIN thì chuyển đến dashboard
             if (roles.includes('ADMIN')) {
-              alert("Đăng nhập thành công!");
-              navigate('/dashboard');
+              setSuccess('Đăng nhập thành công!');
+              setTimeout(() => navigate('/dashboard'), 1500);
               return;
             }
           }
@@ -56,8 +60,8 @@ function Login() {
           console.error('Error fetching user info:', error);
         }
 
-        alert("Đăng nhập thành công!");
-        navigate('/');
+        setSuccess('Đăng nhập thành công!');
+        setTimeout(() => navigate('/'), 1500);
       } else {
         setError('Tên đăng nhập hoặc mật khẩu không đúng!');
       }
@@ -71,51 +75,45 @@ function Login() {
 
   return (
     <div className="auth-container">
-      <div className="auth-box">
-        <h2>Đăng Nhập</h2>
+      <Card title="Đăng Nhập" className="auth-box">
         <form onSubmit={handleSubmit}>
-          {error && <div className="error-message">{error}</div>}
+          {error && <Alert variant="error">{error}</Alert>}
+          {success && <Alert variant="success">{success}</Alert>}
           
-          <div className="form-group">
-            <label htmlFor="username">Tên đăng nhập</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              required
-              placeholder="Nhập tên đăng nhập"
-              disabled={loading}
-            />
-          </div>
+          <Input
+            label="Tên đăng nhập"
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            required
+            placeholder="Nhập tên đăng nhập"
+            disabled={loading}
+          />
           
-          <div className="form-group">
-            <label htmlFor="password">Mật khẩu</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="Nhập mật khẩu"
-              disabled={loading}
-            />
-          </div>
+          <Input
+            label="Mật khẩu"
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            placeholder="Nhập mật khẩu"
+            disabled={loading}
+          />
 
-          <button type="submit" className="auth-button" disabled={loading}>
+          <Button type="submit" variant="primary" disabled={loading} className="auth-button">
             {loading ? 'Đang đăng nhập...' : 'Đăng Nhập'}
-          </button>
-        </form>
+          </Button>
 
-        <div className="auth-footer">
-          <p className="forgot-password-link">
-            <Link to="/forgot-password">Quên mật khẩu?</Link>
-          </p>
-          <p>Chưa có tài khoản? <Link to="/signup">Đăng ký ngay</Link></p>
-        </div>
-      </div>
+          <div className="auth-footer">
+            <p className="forgot-password-link">
+              <Link to="/forgot-password">Quên mật khẩu?</Link>
+            </p>
+            <p>Chưa có tài khoản? <Link to="/signup">Đăng ký ngay</Link></p>
+          </div>
+        </form>
+      </Card>
     </div>
   );
 }

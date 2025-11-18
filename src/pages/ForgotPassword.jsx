@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authAPI } from '../services/api';
-import './styles/Auth.css';
+import { Input, Button, Alert, Card } from '../components/common';
+import '../assets/styles/Auth.css';
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -137,38 +138,33 @@ function ForgotPassword() {
 
   return (
     <div className="auth-container">
-      <div className="auth-box">
-        <h2>Quên mật khẩu</h2>
-        
+      <Card title="Quên mật khẩu" className="auth-box">
         <div className="steps-indicator">
           <div className={`step ${step >= 1 ? 'active' : ''}`}>1. Email</div>
           <div className={`step ${step >= 2 ? 'active' : ''}`}>2. Xác thực OTP</div>
           <div className={`step ${step >= 3 ? 'active' : ''}`}>3. Mật khẩu mới</div>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
-        {success && <div className="success-message">{success}</div>}
+        {error && <Alert variant="error">{error}</Alert>}
+        {success && <Alert variant="success">{success}</Alert>}
 
         {step === 1 && (
           <form onSubmit={handleEmailSubmit}>
             <p className="step-description">
               Nhập email của bạn để nhận mã OTP xác thực
             </p>
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="Nhập Email"
-                disabled={loading}
-              />
-            </div>
-            <button type="submit" className="auth-button" disabled={loading}>
+            <Input
+              label="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="Nhập Email"
+              disabled={loading}
+            />
+            <Button type="submit" variant="primary" disabled={loading} className="auth-button">
               {loading ? 'Đang gửi...' : 'Gửi mã OTP'}
-            </button>
+            </Button>
           </form>
         )}
 
@@ -177,31 +173,28 @@ function ForgotPassword() {
             <p className="step-description">
               Mã OTP đã được gửi đến <strong>{email}</strong>
             </p>
-            <div className="form-group">
-              <label htmlFor="otp">Mã OTP (6 ký tự)</label>
-              <input
-                type="text"
-                id="otp"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                required
-                maxLength="6"
-                disabled={loading}
-                className="otp-input"
-              />
-            </div>
-            <button type="submit" className="auth-button" disabled={loading}>
+            <Input
+              label="Mã OTP (6 ký tự)"
+              type="text"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              required
+              maxLength="6"
+              disabled={loading}
+              className="otp-input"
+            />
+            <Button type="submit" variant="primary" disabled={loading} className="auth-button">
               {loading ? 'Đang xác thực...' : 'Xác thực OTP'}
-            </button>
+            </Button>
             <div className="resend-otp">
-              <button 
+              <Button 
                 type="button" 
                 onClick={handleResendOtp} 
-                className="link-button"
+                variant="link"
                 disabled={loading}
               >
                 Gửi lại mã OTP
-              </button>
+              </Button>
             </div>
           </form>
         )}
@@ -211,40 +204,34 @@ function ForgotPassword() {
             <p className="step-description">
               Nhập mật khẩu mới của bạn
             </p>
-            <div className="form-group">
-              <label htmlFor="newPassword">Mật khẩu mới</label>
-              <input
-                type="password"
-                id="newPassword"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-                placeholder="Tối thiểu 8 ký tự"
-                disabled={loading}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="confirmPassword">Xác nhận mật khẩu</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                placeholder="Nhập lại mật khẩu mới"
-                disabled={loading}
-              />
-            </div>
-            <button type="submit" className="auth-button" disabled={loading}>
+            <Input
+              label="Mật khẩu mới"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+              placeholder="Tối thiểu 8 ký tự"
+              disabled={loading}
+            />
+            <Input
+              label="Xác nhận mật khẩu"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              placeholder="Nhập lại mật khẩu mới"
+              disabled={loading}
+            />
+            <Button type="submit" variant="primary" disabled={loading} className="auth-button">
               {loading ? 'Đang đặt lại...' : 'Đặt lại mật khẩu'}
-            </button>
+            </Button>
           </form>
         )}
 
         <div className="auth-footer">
           <p><Link to="/login">← Quay lại đăng nhập</Link></p>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

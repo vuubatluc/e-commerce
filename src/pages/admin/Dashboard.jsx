@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import DashboardNavbar from './DashboardNavbar';
-import './styles/Dashboard.css';
+import '../../assets/styles/Dashboard.css';
 
 function Dashboard() {
   const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
@@ -12,16 +11,13 @@ function Dashboard() {
   }, []);
 
   return (
-    <>
-      <DashboardNavbar />
-      <div className="dashboard-container">
+    <div className="dashboard-container">
         <div className="dashboard-header">
           <h1>Dashboard</h1>
         </div>
 
         
       </div>
-    </>
   );
 }
 

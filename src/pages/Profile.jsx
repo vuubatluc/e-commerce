@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userAPI } from '../services/api';
-import Navbar from './Navbar';
-import DashboardNavbar from './DashboardNavbar';
-import './styles/Profile.css';
+import { Input, Button, Alert, Card } from '../components/common';
+import '../assets/styles/Profile.css';
 
 function Profile() {
   const navigate = useNavigate();
@@ -120,129 +119,108 @@ function Profile() {
 
   if (loading) {
     return (
-      <>
-        {isAdmin ? <DashboardNavbar /> : <Navbar />}
-        <div className="profile-container">
+      <div className="profile-container">
+        <Card>
           <div className="loading">Đang tải...</div>
-        </div>
-      </>
+        </Card>
+      </div>
     );
   }
 
   if (!userInfo) {
     return (
-      <>
-        {isAdmin ? <DashboardNavbar /> : <Navbar />}
-        <div className="profile-container">
-          <div className="error-box">Không thể tải thông tin người dùng</div>
-        </div>
-      </>
+      <div className="profile-container">
+        <Alert variant="error">Không thể tải thông tin người dùng</Alert>
+      </div>
     );
   }
 
   return (
-    <>
-      {isAdmin ? <DashboardNavbar /> : <Navbar />}
-      <div className="profile-container">
-      <div className="profile-card">
-        <div className="profile-header">
-          <h1>Hồ sơ của tôi</h1>
-          {!isEditing && (
-            <button onClick={() => setIsEditing(true)} className="edit-button">
+    <div className="profile-container">
+      <Card 
+        title="Hồ sơ của tôi"
+        headerActions={
+          !isEditing && (
+            <Button onClick={() => setIsEditing(true)} variant="primary">
               Chỉnh sửa
-            </button>
-          )}
-        </div>
-
-        {error && <div className="error-message">{error}</div>}
-        {success && <div className="success-message">{success}</div>}
+            </Button>
+          )
+        }
+        className="profile-card"
+      >
+        {error && <Alert variant="error">{error}</Alert>}
+        {success && <Alert variant="success">{success}</Alert>}
 
         <form onSubmit={handleSubmit}>
           <div className="profile-section">
             <h3>Thông tin cơ bản</h3>
             
-            <div className="form-group">
-              <label>Tên đăng nhập</label>
-              <input
-                type="text"
-                value={userInfo.username}
-                disabled
-                className="input-disabled"
-              />
-              <small>Không thể thay đổi tên đăng nhập</small>
-            </div>
+            <Input
+              label="Tên đăng nhập"
+              type="text"
+              value={userInfo.username}
+              disabled
+              helperText="Không thể thay đổi tên đăng nhập"
+            />
 
-            <div className="form-group">
-              <label htmlFor="name">Họ và tên</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                disabled={!isEditing}
-                required
-              />
-            </div>
+            <Input
+              label="Họ và tên"
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              disabled={!isEditing}
+              required
+            />
 
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                disabled={!isEditing}
-                required
-              />
-            </div>
+            <Input
+              label="Email"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              disabled={!isEditing}
+              required
+            />
 
-            <div className="form-group">
-              <label htmlFor="phone">Số điện thoại</label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                disabled={!isEditing}
-              />
-            </div>
+            <Input
+              label="Số điện thoại"
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              disabled={!isEditing}
+            />
           </div>
 
           {isEditing && (
             <div className="profile-section">
               <h3>Đổi mật khẩu (tùy chọn)</h3>
-              <div className="form-group">
-                <label htmlFor="password">Mật khẩu mới</label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Để trống nếu không đổi mật khẩu"
-                />
-                <small>Tối thiểu 8 ký tự</small>
-              </div>
+              <Input
+                label="Mật khẩu mới"
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Để trống nếu không đổi mật khẩu"
+                helperText="Tối thiểu 8 ký tự"
+              />
             </div>
           )}
 
           {isEditing && (
             <div className="button-group">
-              <button type="submit" className="save-button" disabled={saving}>
+              <Button type="submit" variant="primary" disabled={saving}>
                 {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
-              </button>
-              <button type="button" onClick={handleCancel} className="cancel-button">
+              </Button>
+              <Button type="button" onClick={handleCancel} variant="secondary">
                 Hủy
-              </button>
+              </Button>
             </div>
           )}
         </form>
-      </div>
+      </Card>
     </div>
-    </>
   );
 }
 
