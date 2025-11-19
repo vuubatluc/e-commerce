@@ -14,7 +14,8 @@ function UserManagement() {
     name: '',
     email: '',
     phone: '',
-    password: ''
+    password: '',
+    roles: []
   });
   const [saving, setSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
@@ -60,11 +61,13 @@ function UserManagement() {
       const response = await userAPI.getUser(userId);
       if (response.result) {
         setSelectedUser(response.result);
+        const userRoles = response.result.roles ? response.result.roles.map(r => r.name) : [];
         setFormData({
           name: response.result.name || '',
           email: response.result.email || '',
           phone: response.result.phone || '',
-          password: ''
+          password: '',
+          roles: userRoles
         });
         setIsEditing(true);
         setIsViewing(false);
@@ -100,6 +103,20 @@ function UserManagement() {
     });
   };
 
+  const handleRoleChange = (roleName) => {
+    setFormData(prevData => {
+      const currentRoles = prevData.roles || [];
+      const hasRole = currentRoles.includes(roleName);
+      
+      return {
+        ...prevData,
+        roles: hasRole 
+          ? currentRoles.filter(r => r !== roleName)
+          : [...currentRoles, roleName]
+      };
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -109,7 +126,8 @@ function UserManagement() {
       const updateData = {
         name: formData.name,
         email: formData.email,
-        phone: formData.phone
+        phone: formData.phone,
+        roles: formData.roles
       };
 
       if (formData.password) {
@@ -143,7 +161,8 @@ function UserManagement() {
       name: '',
       email: '',
       phone: '',
-      password: ''
+      password: '',
+      roles: []
     });
     setError('');
   };
@@ -339,6 +358,29 @@ function UserManagement() {
               placeholder="Để trống nếu không đổi mật khẩu"
               helperText="Tối thiểu 8 ký tự"
             />
+
+            <div className="role-selection">
+              <label className="role-selection-label">Vai trò *</label>
+              <div className="role-checkboxes">
+                <label className="role-checkbox-item">
+                  <input
+                    type="checkbox"
+                    checked={formData.roles.includes('USER')}
+                    onChange={() => handleRoleChange('USER')}
+                  />
+                  <span>USER</span>
+                </label>
+                <label className="role-checkbox-item">
+                  <input
+                    type="checkbox"
+                    checked={formData.roles.includes('ADMIN')}
+                    onChange={() => handleRoleChange('ADMIN')}
+                  />
+                  <span>ADMIN</span>
+                </label>
+              </div>
+              <small className="role-helper-text">Có thể chọn cả 2 vai trò</small>
+            </div>
 
             <div className="button-group">
               <Button type="submit" variant="primary" disabled={saving}>
