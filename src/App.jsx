@@ -12,11 +12,15 @@ import Profile from "./pages/Profile";
 // Admin Pages
 import Dashboard from "./pages/admin/Dashboard";
 import UserManagement from "./pages/admin/UserManagement";
+import ProductsManagement from "./pages/admin/ProductsManagement";
 
 // Layouts
 import MainLayout from "./layouts/MainLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
 import ProfileLayout from "./layouts/ProfileLayout";
+
+// Context
+import { ProductProvider } from "./context/ProductContext";
 
 // Utils
 import { isAuthenticated } from "./services/api";
@@ -118,6 +122,83 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
+    <ProductProvider>
+      <Router>
+        <Routes>
+          {/* Public Routes with MainLayout */}
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route
+              path="/login"
+              element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <PublicRoute>
+                  <Signup />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/forgot-password"
+              element={
+                <PublicRoute>
+                  <ForgotPassword />
+                </PublicRoute>
+              }
+            />
+          </Route>
+
+          {/* Protected User Routes with MainLayout */}
+          <Route element={<MainLayout />}>
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+
+          {/* Admin Routes with DashboardLayout */}
+          <Route element={<DashboardLayout />}>
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute requireAdmin>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/users"
+              element={
+                <ProtectedRoute requireAdmin>
+                  <UserManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/products"
+              element={
+                <ProtectedRoute requireAdmin>
+                  <ProductsManagement />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+
+          {/* 404 Not Found */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
+    </ProductProvider>
   );
 }
 
