@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { userAPI } from '../services/api';
-import { Input, Button, Alert, Card } from '../components/common';
+import { Input, Button, Alert, Card, Modal } from '../components/common';
 import '../assets/styles/Profile.css';
 
 function Profile() {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
 
   // Kiểm tra role từ localStorage
@@ -37,7 +38,8 @@ function Profile() {
           name: response.result.name || '',
           email: response.result.email || '',
           phone: response.result.phone || '',
-          password: ''
+          password: '',
+          confirmPassword: ''
         });
       }
     } catch (error) {
@@ -70,26 +72,11 @@ function Profile() {
         phone: formData.phone
       };
 
-      // Chỉ gửi password nếu người dùng nhập
-      if (formData.password) {
-        if (formData.password.length < 8) {
-          setError('Mật khẩu phải có ít nhất 8 ký tự!');
-          setSaving(false);
-          return;
-        }
-        updateData.password = formData.password;
-      }
-
       const response = await userAPI.updateMyInfo(updateData);
       
       if (response.result) {
         setUserInfo(response.result);
         setSuccess('Cập nhật thông tin thành công!');
-        setIsEditing(false);
-        setFormData({
-          ...formData,
-          password: ''
-        });
         
         // Cập nhật localStorage
         const storedUserInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
@@ -105,16 +92,66 @@ function Profile() {
     }
   };
 
-  const handleCancel = () => {
-    setIsEditing(false);
-    setFormData({
-      name: userInfo?.name || '',
-      email: userInfo?.email || '',
-      phone: userInfo?.phone || '',
-      password: ''
-    });
+  const handleChangePassword = () => {
+    setIsChangingPassword(true);
     setError('');
     setSuccess('');
+  };
+
+  const handleCancelChangePassword = () => {
+    setIsChangingPassword(false);
+    setFormData({
+      ...formData,
+      password: '',
+      confirmPassword: ''
+    });
+    setError('');
+  };
+
+  const handleSubmitChangePassword = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setError('');
+
+    try {
+      if (!formData.password) {
+        setError('Vui lòng nhập mật khẩu mới!');
+        setSaving(false);
+        return;
+      }
+
+      if (formData.password.length < 8) {
+        setError('Mật khẩu phải có ít nhất 8 ký tự!');
+        setSaving(false);
+        return;
+      }
+
+      if (formData.password !== formData.confirmPassword) {
+        setError('Mật khẩu xác nhận không khớp!');
+        setSaving(false);
+        return;
+      }
+
+      const response = await userAPI.changeMyPassword(formData.password);
+      
+      if (response.result) {
+        setSuccess('Đổi mật khẩu thành công!');
+        setIsChangingPassword(false);
+        setFormData({
+          ...formData,
+          password: '',
+          confirmPassword: ''
+        });
+        setTimeout(() => setSuccess(''), 3000);
+      } else {
+        setError(response.message || 'Đổi mật khẩu thất bại');
+      }
+    } catch (error) {
+      console.error('Error changing password:', error);
+      setError('Không thể đổi mật khẩu');
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (loading) {
@@ -139,13 +176,6 @@ function Profile() {
     <div className="profile-container">
       <Card 
         title="Hồ sơ của tôi"
-        headerActions={
-          !isEditing && (
-            <Button onClick={() => setIsEditing(true)} variant="primary">
-              Chỉnh sửa
-            </Button>
-          )
-        }
         className="profile-card"
       >
         {error && <Alert variant="error">{error}</Alert>}
@@ -169,7 +199,6 @@ function Profile() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              disabled={!isEditing}
               required
             />
 
@@ -179,7 +208,6 @@ function Profile() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              disabled={!isEditing}
               required
             />
 
@@ -189,37 +217,66 @@ function Profile() {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              disabled={!isEditing}
             />
           </div>
 
-          {isEditing && (
-            <div className="profile-section">
-              <h3>Đổi mật khẩu (tùy chọn)</h3>
-              <Input
-                label="Mật khẩu mới"
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Để trống nếu không đổi mật khẩu"
-                helperText="Tối thiểu 8 ký tự"
-              />
-            </div>
-          )}
-
-          {isEditing && (
-            <div className="button-group">
-              <Button type="submit" variant="primary" disabled={saving}>
-                {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
-              </Button>
-              <Button type="button" onClick={handleCancel} variant="secondary">
-                Hủy
-              </Button>
-            </div>
-          )}
+          <div className="button-group">
+            <Button type="submit" variant="primary" disabled={saving}>
+              {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
+            </Button>
+            <Button 
+              type="button" 
+              onClick={handleChangePassword}
+              variant="warning"
+              disabled={saving}
+            >
+              Đổi mật khẩu
+            </Button>
+          </div>
         </form>
       </Card>
+
+      <Modal
+        isOpen={isChangingPassword}
+        onClose={handleCancelChangePassword}
+        title="Đổi mật khẩu"
+        size="medium"
+      >
+        <form onSubmit={handleSubmitChangePassword} className="change-password-form">
+          {error && <Alert variant="error" onClose={() => setError('')}>{error}</Alert>}
+          
+
+          <Input
+            label="Mật khẩu mới"
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Nhập mật khẩu mới"
+            helperText="Tối thiểu 8 ký tự"
+            required
+          />
+
+          <Input
+            label="Nhập lại mật khẩu mới"
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            placeholder="Nhập lại mật khẩu mới"
+            required
+          />
+
+          <div className="button-group">
+            <Button type="submit" variant="primary" disabled={saving}>
+              {saving ? 'Đang đổi...' : 'Đổi mật khẩu'}
+            </Button>
+            <Button type="button" onClick={handleCancelChangePassword} variant="secondary">
+              Hủy
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

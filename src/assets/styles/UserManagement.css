@@ -44,6 +44,45 @@
   border-left: 4px solid #2a7;
 }
 
+/* Filter Section */
+.filter-section {
+  display: flex;
+  gap: 15px;
+  align-items: flex-end;
+  padding: 20px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 0;
+}
+
+.filter-input {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.clear-filter-btn {
+  height: 42px;
+  white-space: nowrap;
+  margin-bottom: 0;
+}
+
+.filter-result {
+  padding: 15px 20px;
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.filter-result p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.filter-result strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
 /* Table Styles */
 .users-table-container {
   background: white;
@@ -451,4 +490,19 @@
   font-size: 12px;
   color: #666;
   font-style: italic;
+}
+
+/* Responsive Filter Styles */
+@media (max-width: 768px) {
+  .filter-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .clear-filter-btn {
+    width: 100%;
+    height: auto;
+    padding: 10px;
+  }
 }
