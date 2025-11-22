@@ -172,5 +172,6 @@ function Navbar({ variant = 'default' }) {
     </nav>
   );
 }
+  
 <Link to="/dashboard/products">Quản Lý Sản Phẩm</Link>
 export default Navbar;
