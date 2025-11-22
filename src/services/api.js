@@ -131,6 +131,24 @@ export const userAPI = {
       headers: getHeaders()
     });
     return response.json();
+  },
+
+  changePassword: async (id, password) => {
+    const response = await fetch(`${API_BASE_URL}/users/changePassword/${id}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify({ password })
+    });
+    return response.json();
+  },
+
+  changeMyPassword: async (password) => {
+    const response = await fetch(`${API_BASE_URL}/users/changePassword`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify({ password })
+    });
+    return response.json();
   }
 };
 

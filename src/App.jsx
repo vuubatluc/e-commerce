@@ -16,6 +16,7 @@ import UserManagement from "./pages/admin/UserManagement";
 // Layouts
 import MainLayout from "./layouts/MainLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
+import ProfileLayout from "./layouts/ProfileLayout";
 
 // Utils
 import { isAuthenticated } from "./services/api";
@@ -81,8 +82,8 @@ function App() {
           />
         </Route>
 
-        {/* Protected User Routes with MainLayout */}
-        <Route element={<MainLayout />}>
+        {/* Profile Route with ProfileLayout (shows navbar based on role) */}
+        <Route element={<ProfileLayout />}>
           <Route
             path="/profile"
             element={

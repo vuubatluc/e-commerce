@@ -9,16 +9,19 @@ function UserManagement() {
   const [error, setError] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [isViewing, setIsViewing] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     password: '',
+    confirmPassword: '',
     roles: []
   });
   const [saving, setSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [filterEmail, setFilterEmail] = useState('');
+  const [filterPhone, setFilterPhone] = useState('');
 
   useEffect(() => {
     document.title = 'Quản lý người dùng';
@@ -42,19 +45,14 @@ function UserManagement() {
     }
   };
 
-  const handleView = async (userId) => {
-    try {
-      const response = await userAPI.getUser(userId);
-      if (response.result) {
-        setSelectedUser(response.result);
-        setIsViewing(true);
-        setIsEditing(false);
-      }
-    } catch (error) {
-      console.error('Error fetching user:', error);
-      setError('Không thể tải thông tin người dùng');
-    }
-  };
+  // Filter users based on email and phone
+  const filteredUsers = users.filter(user => {
+    const emailMatch = filterEmail === '' || 
+      (user.email && user.email.toLowerCase().includes(filterEmail.toLowerCase()));
+    const phoneMatch = filterPhone === '' || 
+      (user.phone && user.phone.includes(filterPhone));
+    return emailMatch && phoneMatch;
+  });
 
   const handleEdit = async (userId) => {
     try {
@@ -67,10 +65,10 @@ function UserManagement() {
           email: response.result.email || '',
           phone: response.result.phone || '',
           password: '',
+          confirmPassword: '',
           roles: userRoles
         });
         setIsEditing(true);
-        setIsViewing(false);
       }
     } catch (error) {
       console.error('Error fetching user:', error);
@@ -131,6 +129,16 @@ function UserManagement() {
       };
 
       if (formData.password) {
+        if (formData.password.length < 8) {
+          setError('Mật khẩu phải có ít nhất 8 ký tự!');
+          setSaving(false);
+          return;
+        }
+        if (formData.password !== formData.confirmPassword) {
+          setError('Mật khẩu xác nhận không khớp!');
+          setSaving(false);
+          return;
+        }
         updateData.password = formData.password;
       }
 
@@ -155,16 +163,76 @@ function UserManagement() {
 
   const handleCancel = () => {
     setIsEditing(false);
-    setIsViewing(false);
     setSelectedUser(null);
     setFormData({
       name: '',
       email: '',
       phone: '',
       password: '',
+      confirmPassword: '',
       roles: []
     });
     setError('');
+  };
+
+  const handleChangePassword = () => {
+    setIsChangingPassword(true);
+  };
+
+  const handleCancelChangePassword = () => {
+    setIsChangingPassword(false);
+    setFormData({
+      ...formData,
+      password: '',
+      confirmPassword: ''
+    });
+    setError('');
+  };
+
+  const handleSubmitChangePassword = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setError('');
+
+    try {
+      if (!formData.password) {
+        setError('Vui lòng nhập mật khẩu mới!');
+        setSaving(false);
+        return;
+      }
+
+      if (formData.password.length < 8) {
+        setError('Mật khẩu phải có ít nhất 8 ký tự!');
+        setSaving(false);
+        return;
+      }
+
+      if (formData.password !== formData.confirmPassword) {
+        setError('Mật khẩu xác nhận không khớp!');
+        setSaving(false);
+        return;
+      }
+
+      const response = await userAPI.changePassword(selectedUser.id, formData.password);
+      
+      if (response.result) {
+        setSuccessMessage('Đổi mật khẩu thành công!');
+        setIsChangingPassword(false);
+        setFormData({
+          ...formData,
+          password: '',
+          confirmPassword: ''
+        });
+        setTimeout(() => setSuccessMessage(''), 3000);
+      } else {
+        setError(response.message || 'Đổi mật khẩu thất bại');
+      }
+    } catch (error) {
+      console.error('Error changing password:', error);
+      setError('Không thể đổi mật khẩu');
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (loading) {
@@ -181,69 +249,73 @@ function UserManagement() {
     <div className="user-management-container">
       <div className="page-header">
         <h1>Quản lý người dùng</h1>
-        <p>Tổng số: {users.length} người dùng</p>
       </div>
 
       {error && <Alert variant="error" onClose={() => setError('')}>{error}</Alert>}
       {successMessage && <Alert variant="success" onClose={() => setSuccessMessage('')}>{successMessage}</Alert>}
 
-      {!isEditing && !isViewing && (
+      {!isEditing && (
         <Card>
+          <div className="filter-section">
+            <Input
+              label="Lọc theo Email"
+              type="text"
+              value={filterEmail}
+              onChange={(e) => setFilterEmail(e.target.value)}
+              placeholder="Nhập email để tìm kiếm"
+              containerClassName="filter-input"
+            />
+            <Input
+              label="Lọc theo Số điện thoại"
+              type="text"
+              value={filterPhone}
+              onChange={(e) => setFilterPhone(e.target.value)}
+              placeholder="Nhập số điện thoại để tìm kiếm"
+              containerClassName="filter-input"
+            />
+            {(filterEmail || filterPhone) && (
+              <Button 
+                onClick={() => {
+                  setFilterEmail('');
+                  setFilterPhone('');
+                }} 
+                variant="secondary"
+                className="clear-filter-btn"
+              >
+                Xóa bộ lọc
+              </Button>
+            )}
+          </div>
+          <div className="filter-result">
+            <p>Hiển thị: <strong>{filteredUsers.length}</strong> / {users.length} người dùng</p>
+          </div>
           <Table>
             <Table.Head>
               <Table.Row>
                 <Table.Header>ID</Table.Header>
-                <Table.Header>Tên đăng nhập</Table.Header>
                 <Table.Header>Họ tên</Table.Header>
                 <Table.Header>Email</Table.Header>
                 <Table.Header>Số điện thoại</Table.Header>
-                <Table.Header>Vai trò</Table.Header>
                 <Table.Header>Thao tác</Table.Header>
               </Table.Row>
             </Table.Head>
             <Table.Body>
-              {users.map((user) => (
+              {filteredUsers.map((user) => (
                 <Table.Row key={user.id}>
                   <Table.Cell>{user.id}</Table.Cell>
-                  <Table.Cell>{user.username}</Table.Cell>
                   <Table.Cell>{user.name}</Table.Cell>
                   <Table.Cell>{user.email}</Table.Cell>
                   <Table.Cell>{user.phone || 'N/A'}</Table.Cell>
                   <Table.Cell>
-                    <div className="roles-cell">
-                      {user.roles?.map((role, index) => (
-                        <Badge key={index} variant={role.name === 'ADMIN' ? 'danger' : 'primary'}>
-                          {role.name}
-                        </Badge>
-                      ))}
-                    </div>
-                  </Table.Cell>
-                  <Table.Cell>
                     <div className="action-buttons">
-                      {!user.roles?.some(role => role.name === 'ADMIN') ? (
-                        <>
-                          <Button 
-                            onClick={() => handleView(user.id)} 
-                            variant="info"
-                            className="btn-sm"
-                          >
-                            Xem
-                          </Button>
-                          <Button 
-                            onClick={() => handleEdit(user.id)} 
-                            variant="warning"
-                            className="btn-sm"
-                          >
-                            Sửa
-                          </Button>
-                          <Button 
-                            onClick={() => handleDelete(user.id, user.username)} 
-                            variant="danger"
-                            className="btn-sm"
-                          >
-                            Xóa
-                          </Button>
-                        </>
+                      {user.id !== 1 ? (
+                        <Button 
+                          onClick={() => handleEdit(user.id)} 
+                          variant="primary"
+                          className="btn-sm"
+                        >
+                          Edit
+                        </Button>
                       ) : (
                         <Badge variant="secondary">Protected</Badge>
                       )}
@@ -255,57 +327,6 @@ function UserManagement() {
           </Table>
         </Card>
       )}
-
-      <Modal
-        isOpen={isViewing && selectedUser !== null}
-        onClose={handleCancel}
-        title="Chi tiết người dùng"
-        footer={
-          <>
-            <Button onClick={() => handleEdit(selectedUser?.id)} variant="primary">
-              Chỉnh sửa
-            </Button>
-            <Button onClick={handleCancel} variant="secondary">
-              Đóng
-            </Button>
-          </>
-        }
-      >
-        {selectedUser && (
-          <div className="user-detail-content">
-            <div className="detail-row">
-              <span className="detail-label">ID:</span>
-              <span className="detail-value">{selectedUser.id}</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Tên đăng nhập:</span>
-              <span className="detail-value">{selectedUser.username}</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Họ tên:</span>
-              <span className="detail-value">{selectedUser.name}</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Email:</span>
-              <span className="detail-value">{selectedUser.email}</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Số điện thoại:</span>
-              <span className="detail-value">{selectedUser.phone || 'Chưa cập nhật'}</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Vai trò:</span>
-              <div className="roles-display">
-                {selectedUser.roles?.map((role, index) => (
-                  <Badge key={index} variant={role.name === 'ADMIN' ? 'danger' : 'primary'}>
-                    {role.name}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-      </Modal>
 
       <Modal
         isOpen={isEditing && selectedUser !== null}
@@ -349,16 +370,6 @@ function UserManagement() {
               onChange={handleChange}
             />
 
-            <Input
-              label="Mật khẩu mới"
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Để trống nếu không đổi mật khẩu"
-              helperText="Tối thiểu 8 ký tự"
-            />
-
             <div className="role-selection">
               <label className="role-selection-label">Vai trò *</label>
               <div className="role-checkboxes">
@@ -386,7 +397,70 @@ function UserManagement() {
               <Button type="submit" variant="primary" disabled={saving}>
                 {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
               </Button>
+              <Button 
+                type="button" 
+                onClick={handleChangePassword}
+                variant="warning"
+                disabled={saving}
+              >
+                Đổi mật khẩu
+              </Button>
+              <Button 
+                type="button" 
+                onClick={() => {
+                  if (window.confirm(`Bạn có chắc chắn muốn xóa người dùng "${selectedUser.name}"?`)) {
+                    handleDelete(selectedUser.id, selectedUser.username);
+                  }
+                }} 
+                variant="danger"
+                disabled={saving}
+              >
+                Xóa tài khoản
+              </Button>
               <Button type="button" onClick={handleCancel} variant="secondary">
+                Hủy
+              </Button>
+            </div>
+          </form>
+        )}
+      </Modal>
+
+      <Modal
+        isOpen={isChangingPassword && selectedUser !== null}
+        onClose={handleCancelChangePassword}
+        title="Đổi mật khẩu"
+        size="medium"
+      >
+        {selectedUser && (
+          <form onSubmit={handleSubmitChangePassword} className="change-password-form">
+            {error && <Alert variant="error" onClose={() => setError('')}>{error}</Alert>}
+
+            <Input
+              label="Mật khẩu mới"
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Nhập mật khẩu mới"
+              helperText="Tối thiểu 8 ký tự"
+              required
+            />
+
+            <Input
+              label="Nhập lại mật khẩu mới"
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Nhập lại mật khẩu mới"
+              required
+            />
+
+            <div className="button-group">
+              <Button type="submit" variant="primary" disabled={saving}>
+                {saving ? 'Đang đổi...' : 'Đổi mật khẩu'}
+              </Button>
+              <Button type="button" onClick={handleCancelChangePassword} variant="secondary">
                 Hủy
               </Button>
             </div>
