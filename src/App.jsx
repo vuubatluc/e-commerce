@@ -55,73 +55,6 @@ function PublicRoute({ children }) {
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes with MainLayout */}
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route
-            path="/login"
-            element={
-              <PublicRoute>
-                <Login />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              <PublicRoute>
-                <Signup />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path="/forgot-password"
-            element={
-              <PublicRoute>
-                <ForgotPassword />
-              </PublicRoute>
-            }
-          />
-        </Route>
-
-        {/* Profile Route with ProfileLayout (shows navbar based on role) */}
-        <Route element={<ProfileLayout />}>
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-        </Route>
-
-        {/* Admin Routes with DashboardLayout */}
-        <Route element={<DashboardLayout />}>
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute requireAdmin>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/users"
-            element={
-              <ProtectedRoute requireAdmin>
-                <UserManagement />
-              </ProtectedRoute>
-            }
-          />
-        </Route>
-
-        {/* 404 Not Found */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
     <ProductProvider>
       <Router>
         <Routes>
@@ -154,8 +87,8 @@ function App() {
             />
           </Route>
 
-          {/* Protected User Routes with MainLayout */}
-          <Route element={<MainLayout />}>
+          {/* Profile Route with ProfileLayout (shows navbar based on role) */}
+          <Route element={<ProfileLayout />}>
             <Route
               path="/profile"
               element={
