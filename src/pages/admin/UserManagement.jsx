@@ -308,7 +308,7 @@ function UserManagement() {
                   <Table.Cell>{user.phone || 'N/A'}</Table.Cell>
                   <Table.Cell>
                     <div className="action-buttons">
-                      {user.id !== 1 ? (
+                      {user.username !== 'admin' ? (
                         <Button 
                           onClick={() => handleEdit(user.id)} 
                           variant="primary"
