@@ -133,20 +133,20 @@ export const userAPI = {
     return response.json();
   },
 
-  changePassword: async (id, password) => {
+  changePassword: async (id, currentPassword, newPassword) => {
     const response = await fetch(`${API_BASE_URL}/users/changePassword/${id}`, {
       method: 'PUT',
       headers: getHeaders(),
-      body: JSON.stringify({ password })
+      body: JSON.stringify({ currentPassword, newPassword })
     });
     return response.json();
   },
 
-  changeMyPassword: async (password) => {
+  changeMyPassword: async (currentPassword, newPassword) => {
     const response = await fetch(`${API_BASE_URL}/users/changePassword`, {
       method: 'PUT',
       headers: getHeaders(),
-      body: JSON.stringify({ password })
+      body: JSON.stringify({ currentPassword, newPassword })
     });
     return response.json();
   }
@@ -163,4 +163,78 @@ export const handleLogout = () => {
   localStorage.removeItem('username');
   localStorage.removeItem('roles');
   localStorage.removeItem('userInfo');
+};
+
+// Role API
+export const roleAPI = {
+  create: async (roleData) => {
+    const response = await fetch(`${API_BASE_URL}/roles`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(roleData)
+    });
+    return response.json();
+  },
+
+  getAll: async () => {
+    const response = await fetch(`${API_BASE_URL}/roles`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return response.json();
+  },
+
+  update: async (roleName, roleData) => {
+    const response = await fetch(`${API_BASE_URL}/roles/${roleName}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(roleData)
+    });
+    return response.json();
+  },
+
+  delete: async (roleName) => {
+    const response = await fetch(`${API_BASE_URL}/roles/${roleName}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    });
+    return response.json();
+  }
+};
+
+// Permission API
+export const permissionAPI = {
+  create: async (permissionData) => {
+    const response = await fetch(`${API_BASE_URL}/permissions`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(permissionData)
+    });
+    return response.json();
+  },
+
+  getAll: async () => {
+    const response = await fetch(`${API_BASE_URL}/permissions`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return response.json();
+  },
+
+  update: async (permissionName, permissionData) => {
+    const response = await fetch(`${API_BASE_URL}/permissions/${permissionName}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(permissionData)
+    });
+    return response.json();
+  },
+
+  delete: async (permissionName) => {
+    const response = await fetch(`${API_BASE_URL}/permissions/${permissionName}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    });
+    return response.json();
+  }
 };

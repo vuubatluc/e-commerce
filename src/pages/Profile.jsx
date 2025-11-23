@@ -16,6 +16,7 @@ function Profile() {
     name: '',
     email: '',
     phone: '',
+    currentPassword: '',
     password: '',
     confirmPassword: ''
   });
@@ -38,6 +39,7 @@ function Profile() {
           name: response.result.name || '',
           email: response.result.email || '',
           phone: response.result.phone || '',
+          currentPassword: '',
           password: '',
           confirmPassword: ''
         });
@@ -102,6 +104,7 @@ function Profile() {
     setIsChangingPassword(false);
     setFormData({
       ...formData,
+      currentPassword: '',
       password: '',
       confirmPassword: ''
     });
@@ -114,6 +117,12 @@ function Profile() {
     setError('');
 
     try {
+      if (!formData.currentPassword) {
+        setError('Vui lòng nhập mật khẩu hiện tại!');
+        setSaving(false);
+        return;
+      }
+
       if (!formData.password) {
         setError('Vui lòng nhập mật khẩu mới!');
         setSaving(false);
@@ -132,13 +141,14 @@ function Profile() {
         return;
       }
 
-      const response = await userAPI.changeMyPassword(formData.password);
+      const response = await userAPI.changeMyPassword(formData.currentPassword, formData.password);
       
       if (response.result) {
         setSuccess('Đổi mật khẩu thành công!');
         setIsChangingPassword(false);
         setFormData({
           ...formData,
+          currentPassword: '',
           password: '',
           confirmPassword: ''
         });
@@ -245,6 +255,15 @@ function Profile() {
         <form onSubmit={handleSubmitChangePassword} className="change-password-form">
           {error && <Alert variant="error" onClose={() => setError('')}>{error}</Alert>}
           
+          <Input
+            label="Mật khẩu hiện tại"
+            type="password"
+            name="currentPassword"
+            value={formData.currentPassword}
+            onChange={handleChange}
+            placeholder="Nhập mật khẩu hiện tại"
+            required
+          />
 
           <Input
             label="Mật khẩu mới"
