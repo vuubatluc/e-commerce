@@ -9,10 +9,11 @@ import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import Profile from "./pages/Profile";
 
-// Admin Pages
-import Dashboard from "./pages/admin/Dashboard";
+// Admin Pages - ĐỔI TÊN để tránh trùng
+import AdminDashboard from "./pages/admin/Dashboard";
 import UserManagement from "./pages/admin/UserManagement";
 import ProductsManagement from "./pages/admin/ProductsManagement";
+import OrdersManagement from "./pages/admin/OrdersManagement";
 
 // Layouts
 import MainLayout from "./layouts/MainLayout";
@@ -20,7 +21,7 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import ProfileLayout from "./layouts/ProfileLayout";
 
 // Context
-import { ProductProvider } from "./context/ProductContext";
+import { ProductProvider } from "./context/ProductContext"; 
 
 // Utils
 import { isAuthenticated } from "./services/api";
@@ -101,14 +102,17 @@ function App() {
 
           {/* Admin Routes with DashboardLayout */}
           <Route element={<DashboardLayout />}>
+            {/* Dashboard - Trang tổng quan thống kê */}
             <Route
               path="/dashboard"
               element={
                 <ProtectedRoute requireAdmin>
-                  <Dashboard />
+                  <AdminDashboard />
                 </ProtectedRoute>
               }
             />
+            
+            {/* User Management - Quản lý người dùng */}
             <Route
               path="/dashboard/users"
               element={
@@ -117,11 +121,23 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            
+            {/* Products Management - Quản lý sản phẩm */}
             <Route
               path="/dashboard/products"
               element={
                 <ProtectedRoute requireAdmin>
                   <ProductsManagement />
+                </ProtectedRoute>
+              }
+            />
+            
+            {/* Orders Management - Quản lý đơn hàng */}
+            <Route
+              path="/dashboard/orders"
+              element={
+                <ProtectedRoute requireAdmin>
+                  <OrdersManagement />
                 </ProtectedRoute>
               }
             />
