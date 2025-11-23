@@ -10,6 +10,8 @@ function UserManagement() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -77,21 +79,35 @@ function UserManagement() {
   };
 
   const handleDelete = async (userId, username) => {
-    if (window.confirm(`Bạn có chắc chắn muốn xóa người dùng "${username}"?`)) {
-      try {
-        const response = await userAPI.deleteUser(userId);
-        if (response.code === 1000) {
-          setSuccessMessage('Xóa người dùng thành công!');
-          fetchUsers();
-          setTimeout(() => setSuccessMessage(''), 3000);
-        } else {
-          setError(response.message || 'Xóa người dùng thất bại');
-        }
-      } catch (error) {
-        console.error('Error deleting user:', error);
-        setError('Không thể xóa người dùng');
+    setUserToDelete({ id: userId, name: username });
+    setIsConfirmingDelete(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!userToDelete) return;
+    
+    try {
+      const response = await userAPI.deleteUser(userToDelete.id);
+      if (response.code === 1000) {
+        setSuccessMessage('Xóa người dùng thành công!');
+        setIsConfirmingDelete(false);
+        setUserToDelete(null);
+        setIsEditing(false);
+        setSelectedUser(null);
+        fetchUsers();
+        setTimeout(() => setSuccessMessage(''), 3000);
+      } else {
+        setError(response.message || 'Xóa người dùng thất bại');
       }
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      setError('Không thể xóa người dùng');
     }
+  };
+
+  const cancelDelete = () => {
+    setIsConfirmingDelete(false);
+    setUserToDelete(null);
   };
 
   const handleChange = (e) => {
@@ -408,9 +424,7 @@ function UserManagement() {
               <Button 
                 type="button" 
                 onClick={() => {
-                  if (window.confirm(`Bạn có chắc chắn muốn xóa người dùng "${selectedUser.name}"?`)) {
-                    handleDelete(selectedUser.id, selectedUser.username);
-                  }
+                  handleDelete(selectedUser.id, selectedUser.username);
                 }} 
                 variant="danger"
                 disabled={saving}
@@ -466,6 +480,34 @@ function UserManagement() {
             </div>
           </form>
         )}
+      </Modal>
+
+      {/* Modal Xác nhận xóa người dùng */}
+      <Modal
+        isOpen={isConfirmingDelete}
+        onClose={cancelDelete}
+        title="Xác nhận xóa người dùng"
+        size="small"
+      >
+        <div style={{ marginBottom: '20px' }}>
+          <p style={{ fontSize: '16px', marginBottom: '10px' }}>
+            Bạn có chắc chắn muốn xóa người dùng:
+          </p>
+          <p style={{ fontSize: '18px', fontWeight: 'bold', color: '#d32f2f' }}>
+            {userToDelete?.name}
+          </p>
+          <p style={{ fontSize: '14px', color: '#666', marginTop: '10px' }}>
+            Hành động này không thể hoàn tác!
+          </p>
+        </div>
+        <div className="button-group">
+          <Button onClick={confirmDelete} variant="danger">
+            Xác nhận xóa
+          </Button>
+          <Button onClick={cancelDelete} variant="secondary">
+            Hủy
+          </Button>
+        </div>
       </Modal>
     </div>
   );
