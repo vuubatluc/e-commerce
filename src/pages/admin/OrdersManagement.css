@@ -1,0 +1,72 @@
+.orders-management {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.tabs-container {
+  background: white;
+  padding: 0;
+  display: flex;
+  border-bottom: 2px solid #e0e0e0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 18px 30px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.tab-btn:hover {
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.tab-btn.active {
+  color: #2196F3;
+  background-color: #e3f2fd;
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: #2196F3;
+}
+
+.tab-icon {
+  font-size: 20px;
+}
+
+.tab-content {
+  padding: 0;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
