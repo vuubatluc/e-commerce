@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useCart } from "../context/CartContext";
-import { cartAPI } from "../services/cartAPI";
+import { cartAPI } from "../services/cartApi";
 
 function AddToCart({ product }) {
   const { addToCart } = useCart();

@@ -8,12 +8,12 @@ function CartPage() {
   const { cartItems, removeFromCart, updateQuantity, totalAmount } = useCart();
   const [loading, setLoading] = useState(false);
 
-  // Xử lý xóa sản phẩm với API
+  // Xử lý xóa sản phẩm
   const handleRemoveFromCart = async (productId) => {
     setLoading(true);
     try {
       await cartAPI.removeFromCart(productId);
-      removeFromCart(productId); // Cập nhật context
+      removeFromCart(productId); 
     } catch (error) {
       console.error("Remove from cart error:", error);
       alert("Có lỗi xảy ra khi xóa sản phẩm!");
@@ -27,7 +27,7 @@ function CartPage() {
     setLoading(true);
     try {
       await cartAPI.updateCartItem(productId, newQuantity);
-      updateQuantity(productId, newQuantity); // Cập nhật context
+      updateQuantity(productId, newQuantity);
     } catch (error) {
       console.error("Update quantity error:", error);
       alert("Có lỗi xảy ra khi cập nhật số lượng!");
@@ -40,8 +40,7 @@ function CartPage() {
   const handleCheckout = async () => {
     setLoading(true);
     try {
-      // Gọi API thanh toán (nếu có)
-      // await orderAPI.createOrder(cartItems);
+      
       alert("Đặt hàng thành công!");
 
       // Xóa giỏ hàng sau khi đặt hàng
