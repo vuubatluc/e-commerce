@@ -2,41 +2,54 @@ import React, { useState } from 'react';
 import { useProducts } from '../../context/ProductContext';
 import AllProducts from './AllProducts';
 import AddProduct from './AddProduct';
+import EditProduct from './EditProduct';
 import './ProductsManagement.css';
 
 const ProductsManagement = () => {
-  const [activeTab, setActiveTab] = useState('all');
+  const [view, setView] = useState('list'); // 'list', 'add', 'edit'
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const { products } = useProducts();
 
   console.log('ProductsManagement: Current products:', products);
 
+  const handleAddSuccess = () => {
+    setView('list');
+  };
+
+  const handleEditSuccess = () => {
+    setView('list');
+    setSelectedProduct(null);
+  };
+
+  const handleEdit = (product) => {
+    setSelectedProduct(product);
+    setView('edit');
+  };
+
   return (
     <div className="products-management">
-      <div className="tabs-container">
-        <button
-          className={`tab-btn ${activeTab === 'all' ? 'active' : ''}`}
-          onClick={() => setActiveTab('all')}
-        >
-          <span className="tab-icon">📦</span>
-          Tất Cả Sản Phẩm
-          {products.length > 0 && (
-            <span className="product-count">{products.length}</span>
-          )}
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'add' ? 'active' : ''}`}
-          onClick={() => setActiveTab('add')}
-        >
-          <span className="tab-icon">➕</span>
-          Thêm Sản Phẩm
-        </button>
-      </div>
-
-      <div className="tab-content">
-        {activeTab === 'all' ? (
-          <AllProducts />
-        ) : (
-          <AddProduct onSuccess={() => setActiveTab('all')} />
+      <div className="management-content">
+        {view === 'list' && (
+          <AllProducts 
+            onAddNew={() => setView('add')} 
+            onEdit={handleEdit}
+          />
+        )}
+        {view === 'add' && (
+          <AddProduct 
+            onSuccess={handleAddSuccess} 
+            onCancel={() => setView('list')} 
+          />
+        )}
+        {view === 'edit' && selectedProduct && (
+          <EditProduct 
+            product={selectedProduct}
+            onSuccess={handleEditSuccess} 
+            onCancel={() => {
+              setView('list');
+              setSelectedProduct(null);
+            }} 
+          />
         )}
       </div>
     </div>
