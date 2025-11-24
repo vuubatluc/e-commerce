@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -33,6 +33,9 @@ import { CartProvider } from "./context/CartContext";
 // Utils
 import { isAuthenticated } from "./services/api";
 
+// Components
+import { Alert } from "./components/common";
+
 // Protected Route Component
 function ProtectedRoute({ children, requireAdmin = false }) {
   const isLoggedIn = isAuthenticated();
@@ -62,10 +65,49 @@ function PublicRoute({ children }) {
 }
 
 function App() {
+  const [tokenExpiredMessage, setTokenExpiredMessage] = useState('');
+
+  useEffect(() => {
+    // Lắng nghe sự kiện token expired
+    const handleTokenExpired = (event) => {
+      setTokenExpiredMessage(event.detail.message);
+      
+      // Tự động ẩn thông báo sau 2 giây
+      setTimeout(() => {
+        setTokenExpiredMessage('');
+      }, 5000);
+    };
+
+    window.addEventListener('tokenExpired', handleTokenExpired);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('tokenExpired', handleTokenExpired);
+    };
+  }, []);
+
   return (
     <ProductProvider>
       <CartProvider>
         <Router>
+          {/* Global Alert cho token expired */}
+          {tokenExpiredMessage && (
+            <div style={{ 
+              position: 'fixed', 
+              top: '20px', 
+              left: '50%', 
+              transform: 'translateX(-50%)', 
+              zIndex: 9999,
+              width: '90%',
+              maxWidth: '500px',
+              backgroundColor: 'white'
+            }}>
+              <Alert variant="error" onClose={() => setTokenExpiredMessage('')}>
+                {tokenExpiredMessage}
+              </Alert>
+            </div>
+          )}
+
           <Routes>
             {/* Public Routes with MainLayout */}
             <Route element={<MainLayout />}>
