@@ -206,6 +206,29 @@
   font-size: 14px;
 }
 
+/* Info Display */
+.info-display {
+  margin-bottom: 20px;
+}
+
+.info-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.info-value {
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #2e7d32;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .profile-container {

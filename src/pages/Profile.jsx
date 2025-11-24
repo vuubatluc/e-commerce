@@ -228,6 +228,15 @@ function Profile() {
               value={formData.phone}
               onChange={handleChange}
             />
+
+            <div className="info-display">
+              <label className="info-label">Tổng tiền đã mua</label>
+              <div className="info-value">
+                {userInfo.totalOrderValue 
+                  ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(userInfo.totalOrderValue)
+                  : '0 ₫'}
+              </div>
+            </div>
           </div>
 
           <div className="button-group">
