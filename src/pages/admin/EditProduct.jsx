@@ -2,22 +2,22 @@ import React, { useState } from 'react';
 import { useProducts } from '../../context/ProductContext';
 import './AddProduct.css';
 
-const AddProduct = ({ onSuccess, onCancel }) => {
-  const { addProduct } = useProducts();
+const EditProduct = ({ product, onSuccess, onCancel }) => {
+  const { updateProduct } = useProducts();
   
   const [formData, setFormData] = useState({
-    name: '',
-    price: '',
-    costPrice: '',
-    colors: [],
-    sizes: [],
-    description: '',
-    category: '',
-    variantStock: {}
+    name: product.name || '',
+    price: product.price || '',
+    costPrice: product.costPrice || (product.price * 0.7) || '',
+    colors: product.colors || [],
+    sizes: product.sizes || [],
+    description: product.description || '',
+    category: product.category || '',
+    variantStock: product.variantStock || {}
   });
 
-  const [images, setImages] = useState([]);
-  const [previewImages, setPreviewImages] = useState([]);
+  const [images, setImages] = useState(product.images || []);
+  const [previewImages, setPreviewImages] = useState(product.images || []);
   const [colorInput, setColorInput] = useState('');
   const [sizeInput, setSizeInput] = useState('');
 
@@ -168,7 +168,8 @@ const AddProduct = ({ onSuccess, onCancel }) => {
     }
 
     try {
-      const newProduct = {
+      const updatedProduct = {
+        ...product,
         ...formData,
         images: images,
         price: parseFloat(formData.price),
@@ -176,36 +177,23 @@ const AddProduct = ({ onSuccess, onCancel }) => {
         stock: getTotalStock()
       };
 
-      console.log('AddProduct: Submitting product:', newProduct);
-      addProduct(newProduct);
+      console.log('EditProduct: Updating product:', updatedProduct);
+      updateProduct(product.id, updatedProduct);
       
-      alert('Thêm sản phẩm thành công!');
-      
-      setFormData({
-        name: '',
-        price: '',
-        costPrice: '',
-        colors: [],
-        sizes: [],
-        description: '',
-        category: '',
-        variantStock: {}
-      });
-      setImages([]);
-      setPreviewImages([]);
+      alert('Cập nhật sản phẩm thành công!');
       
       if (onSuccess) {
         onSuccess();
       }
     } catch (error) {
-      console.error('Error adding product:', error);
-      alert('Có lỗi xảy ra khi thêm sản phẩm!');
+      console.error('Error updating product:', error);
+      alert('Có lỗi xảy ra khi cập nhật sản phẩm!');
     }
   };
 
   return (
     <div className="add-product-container">
-      <h1>Thêm Sản Phẩm Mới</h1>
+      <h1>Chỉnh Sửa Sản Phẩm</h1>
       
       <form onSubmit={handleSubmit} className="add-product-form">
         <div className="form-group">
@@ -427,7 +415,7 @@ const AddProduct = ({ onSuccess, onCancel }) => {
             Hủy
           </button>
           <button type="submit" className="submit-btn">
-            ➕ Thêm Sản Phẩm
+            💾 Lưu Thay Đổi
           </button>
         </div>
       </form>
@@ -435,4 +423,4 @@ const AddProduct = ({ onSuccess, onCancel }) => {
   );
 };
 
-export default AddProduct;
+export default EditProduct;
