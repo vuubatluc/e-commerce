@@ -1,5 +1,31 @@
 const API_BASE_URL = 'http://localhost:8080/api';
 
+// Helper function để handle response và check token expiration
+const handleResponse = async (response) => {
+  const data = await response.json();
+  
+  // Kiểm tra nếu token hết hạn hoặc không hợp lệ
+  if (response.status === 401 || data.code === 1007) { // 1007 là UNAUTHENTICATED code
+    // Xóa token và thông tin user
+    localStorage.removeItem('token');
+    localStorage.removeItem('userInfo');
+    localStorage.removeItem('roles');
+    
+    // Hiển thị thông báo
+    const event = new CustomEvent('tokenExpired', { 
+      detail: { message: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!' } 
+    });
+    window.dispatchEvent(event);
+    
+    // Chuyển hướng về trang login sau 2 giây
+    setTimeout(() => {
+      window.location.href = '/login';
+    }, 2000);
+  }
+  
+  return data;
+};
+
 // Helper function để lấy headers với token
 const getHeaders = () => {
   const token = localStorage.getItem('token');
@@ -79,7 +105,7 @@ export const userAPI = {
       headers: getHeaders(),
       body: JSON.stringify(userData)
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   getMyInfo: async () => {
@@ -87,7 +113,7 @@ export const userAPI = {
       method: 'GET',
       headers: getHeaders()
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   updateMyInfo: async (userData) => {
@@ -96,7 +122,7 @@ export const userAPI = {
       headers: getHeaders(),
       body: JSON.stringify(userData)
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   // Admin API
@@ -105,7 +131,7 @@ export const userAPI = {
       method: 'GET',
       headers: getHeaders()
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   getUser: async (id) => {
@@ -113,7 +139,7 @@ export const userAPI = {
       method: 'GET',
       headers: getHeaders()
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   updateUser: async (id, userData) => {
@@ -122,7 +148,7 @@ export const userAPI = {
       headers: getHeaders(),
       body: JSON.stringify(userData)
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   deleteUser: async (id) => {
@@ -130,7 +156,7 @@ export const userAPI = {
       method: 'DELETE',
       headers: getHeaders()
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   changePassword: async (id, currentPassword, newPassword) => {
@@ -139,7 +165,7 @@ export const userAPI = {
       headers: getHeaders(),
       body: JSON.stringify({ currentPassword, newPassword })
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   changeMyPassword: async (currentPassword, newPassword) => {
@@ -148,7 +174,7 @@ export const userAPI = {
       headers: getHeaders(),
       body: JSON.stringify({ currentPassword, newPassword })
     });
-    return response.json();
+    return handleResponse(response);
   }
 };
 
@@ -173,7 +199,7 @@ export const roleAPI = {
       headers: getHeaders(),
       body: JSON.stringify(roleData)
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   getAll: async () => {
@@ -181,7 +207,7 @@ export const roleAPI = {
       method: 'GET',
       headers: getHeaders()
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   update: async (roleName, roleData) => {
@@ -190,7 +216,7 @@ export const roleAPI = {
       headers: getHeaders(),
       body: JSON.stringify(roleData)
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   delete: async (roleName) => {
@@ -198,7 +224,7 @@ export const roleAPI = {
       method: 'DELETE',
       headers: getHeaders()
     });
-    return response.json();
+    return handleResponse(response);
   }
 };
 
@@ -210,7 +236,7 @@ export const permissionAPI = {
       headers: getHeaders(),
       body: JSON.stringify(permissionData)
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   getAll: async () => {
@@ -218,7 +244,7 @@ export const permissionAPI = {
       method: 'GET',
       headers: getHeaders()
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   update: async (permissionName, permissionData) => {
@@ -227,7 +253,7 @@ export const permissionAPI = {
       headers: getHeaders(),
       body: JSON.stringify(permissionData)
     });
-    return response.json();
+    return handleResponse(response);
   },
 
   delete: async (permissionName) => {
@@ -235,6 +261,6 @@ export const permissionAPI = {
       method: 'DELETE',
       headers: getHeaders()
     });
-    return response.json();
+    return handleResponse(response);
   }
 };
