@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useProducts } from '../../context/ProductContext';
 import AllProducts from './AllProducts';
 import AddProduct from './AddProduct';
@@ -8,6 +8,9 @@ const ProductsManagement = () => {
   const [activeTab, setActiveTab] = useState('all');
   const { products } = useProducts();
 
+  useEffect(() => {
+    document.title = 'Quản lý sản phẩm';
+  }, []);
   console.log('ProductsManagement: Current products:', products);
 
   return (

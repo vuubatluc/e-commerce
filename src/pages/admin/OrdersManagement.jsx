@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AllOrders from './AllOrders';
 import './OrdersManagement.css';
 
 const OrdersManagement = () => {
+  useEffect(() => {
+      document.title = 'Quản lý đơn hàng';
+    }, []);
   const [activeTab, setActiveTab] = useState('all');
 
   return (

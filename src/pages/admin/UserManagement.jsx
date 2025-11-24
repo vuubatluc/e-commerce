@@ -477,6 +477,7 @@ function UserManagement() {
                 <Table.Header style={{ textAlign: 'center' }}>Họ tên</Table.Header>
                 <Table.Header style={{ textAlign: 'center' }}>Email</Table.Header>
                 <Table.Header style={{ textAlign: 'center' }}>Số điện thoại</Table.Header>
+                <Table.Header style={{ textAlign: 'center' }}>Tổng tiền đã mua</Table.Header>
                 <Table.Header style={{ textAlign: 'center' }}>Thao tác</Table.Header>
               </Table.Row>
             </Table.Head>
@@ -487,6 +488,11 @@ function UserManagement() {
                   <Table.Cell style={{ textAlign: 'center' }}>{user.name}</Table.Cell>
                   <Table.Cell style={{ textAlign: 'center' }}>{user.email}</Table.Cell>
                   <Table.Cell style={{ textAlign: 'center' }}>{user.phone || 'N/A'}</Table.Cell>
+                  <Table.Cell style={{ textAlign: 'center' }}>
+                    {user.totalOrderValue 
+                      ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(user.totalOrderValue)
+                      : '0 ₫'}
+                  </Table.Cell>
                   <Table.Cell style={{ textAlign: 'center' }}>
                     <div className="action-buttons">
                       {user.username !== 'admin' ? (
