@@ -7,6 +7,9 @@ import {
 } from "react-router-dom";
 import "./App.css";
 
+// Cloudinary
+import { Cloudinary } from '@cloudinary/url-gen';
+
 // Pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -35,6 +38,13 @@ import { isAuthenticated } from "./services/api";
 
 // Components
 import { Alert } from "./components/common";
+
+// Initialize Cloudinary
+export const cld = new Cloudinary({ 
+  cloud: { 
+    cloudName: process.env.REACT_APP_CLOUDINARY_CLOUD_NAME || 'dijdluasd' 
+  } 
+});
 
 // Protected Route Component
 function ProtectedRoute({ children, requireAdmin = false }) {
