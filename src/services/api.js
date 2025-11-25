@@ -264,3 +264,99 @@ export const permissionAPI = {
     return handleResponse(response);
   }
 };
+
+// Category API
+export const categoryAPI = {
+  create: async (categoryData) => {
+    const response = await fetch(`${API_BASE_URL}/categories`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(categoryData)
+    });
+    return handleResponse(response);
+  },
+
+  getAll: async () => {
+    const response = await fetch(`${API_BASE_URL}/categories`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  getById: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/categories/${id}`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  update: async (id, categoryData) => {
+    const response = await fetch(`${API_BASE_URL}/categories/${id}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(categoryData)
+    });
+    return handleResponse(response);
+  },
+
+  delete: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/categories/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  }
+};
+
+// Product API
+export const productAPI = {
+  getProducts: async (keyword = null, categoryId = null, page = 0, size = 100) => {
+    const params = new URLSearchParams();
+    if (keyword) params.append('keyword', keyword);
+    if (categoryId) params.append('categoryId', categoryId);
+    params.append('page', page);
+    params.append('size', size);
+    
+    const response = await fetch(`${API_BASE_URL}/products?${params.toString()}`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  getById: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  create: async (productData) => {
+    const response = await fetch(`${API_BASE_URL}/products`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(productData)
+    });
+    return handleResponse(response);
+  },
+
+  update: async (id, productData) => {
+    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(productData)
+    });
+    return handleResponse(response);
+  },
+
+  delete: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  }
+};
