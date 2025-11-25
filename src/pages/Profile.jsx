@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { userAPI } from '../services/api';
 import { Input, Button, Alert, Card, Modal } from '../components/common';
 import '../assets/styles/Profile.css';
 
 function Profile() {
-  const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -20,10 +18,6 @@ function Profile() {
     password: '',
     confirmPassword: ''
   });
-
-  // Kiểm tra role từ localStorage
-  const roles = JSON.parse(localStorage.getItem('roles') || '[]');
-  const isAdmin = roles.includes('ADMIN');
 
   useEffect(() => {
     document.title = 'Hồ sơ của tôi';
