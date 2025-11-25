@@ -12,14 +12,18 @@ import { Cloudinary } from '@cloudinary/url-gen';
 
 // Pages
 import Home from "./pages/Home";
+import ProductDetail from "./pages/ProductDetail";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import Profile from "./pages/Profile";
-import CartPage from "./pages/CartPage";
+import CartPageNew from "./pages/CartPageNew";
+import Checkout from "./pages/Checkout";
+import OrderSuccess from "./pages/OrderSuccess";
+import OrderHistory from "./pages/OrderHistory";
 
 // Admin Pages - ĐỔI TÊN để tránh trùng
-import AdminDashboard from "./pages/admin/Dashboard";
+import AdminDashboard from "./pages/admin/DashboardNew";
 import UserManagement from "./pages/admin/UserManagement";
 import ProductsManagement from "./pages/admin/ProductsManagement";
 import OrdersManagementNew from "./pages/admin/OrdersManagementNew";
@@ -122,7 +126,33 @@ function App() {
             {/* Public Routes with MainLayout */}
             <Route element={<MainLayout />}>
               <Route path="/" element={<Home />} />
-              <Route path="/cart" element={<CartPage />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/cart" element={<CartPageNew />} />
+              <Route
+                path="/checkout"
+                element={
+                  <ProtectedRoute>
+                    <Checkout />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/order-success/:orderId"
+                element={
+                  <ProtectedRoute>
+                    <OrderSuccess />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/orders"
+                element={
+                  <ProtectedRoute>
+                    <OrderHistory />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/login"
                 element={

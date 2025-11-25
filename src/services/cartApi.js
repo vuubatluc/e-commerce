@@ -15,18 +15,27 @@ const getHeaders = () => {
 
 // Cart API
 export const cartAPI = {
-  // Lấy giỏ hàng
+  // GET /carts/{userId} - Lấy giỏ hàng của user
   getCart: async () => {
-    const response = await fetch(`${API_BASE_URL}/cart`, {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      throw new Error("User not logged in");
+    }
+    const response = await fetch(`${API_BASE_URL}/carts/${userId}`, {
       method: "GET",
       headers: getHeaders(),
     });
     return response.json();
   },
 
-  // Thêm sản phẩm vào giỏ hàng
+  // POST /carts/{userId}/items - Thêm sản phẩm vào giỏ hàng
+  // Body: { productId: Long, quantity: Integer }
   addToCart: async (productId, quantity = 1) => {
-    const response = await fetch(`${API_BASE_URL}/cart/items`, {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      throw new Error("User not logged in");
+    }
+    const response = await fetch(`${API_BASE_URL}/carts/${userId}/items`, {
       method: "POST",
       headers: getHeaders(),
       body: JSON.stringify({
@@ -37,9 +46,14 @@ export const cartAPI = {
     return response.json();
   },
 
-  // Cập nhật số lượng sản phẩm (THEO ITEM ID)
+  // PUT /carts/{userId}/items/{itemId} - Cập nhật số lượng sản phẩm
+  // Body: { quantity: Integer }
   updateCartItem: async (itemId, quantity) => {
-    const response = await fetch(`${API_BASE_URL}/cart/items/${itemId}`, {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      throw new Error("User not logged in");
+    }
+    const response = await fetch(`${API_BASE_URL}/carts/${userId}/items/${itemId}`, {
       method: "PUT",
       headers: getHeaders(),
       body: JSON.stringify({ quantity }),
@@ -47,18 +61,26 @@ export const cartAPI = {
     return response.json();
   },
 
-  // Xóa sản phẩm khỏi giỏ hàng (THEO ITEM ID)
+  // DELETE /carts/{userId}/items/{itemId} - Xóa sản phẩm khỏi giỏ hàng
   removeFromCart: async (itemId) => {
-    const response = await fetch(`${API_BASE_URL}/cart/items/${itemId}`, {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      throw new Error("User not logged in");
+    }
+    const response = await fetch(`${API_BASE_URL}/carts/${userId}/items/${itemId}`, {
       method: "DELETE",
       headers: getHeaders(),
     });
     return response.json();
   },
 
-  // Xóa toàn bộ giỏ hàng
+  // DELETE /carts/{userId}/clear - Xóa toàn bộ giỏ hàng
   clearCart: async () => {
-    const response = await fetch(`${API_BASE_URL}/cart`, {
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+      throw new Error("User not logged in");
+    }
+    const response = await fetch(`${API_BASE_URL}/carts/${userId}/clear`, {
       method: "DELETE",
       headers: getHeaders(),
     });

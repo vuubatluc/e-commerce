@@ -21,7 +21,8 @@ const ProductsManagement = () => {
     price: '',
     stock: '',
     categoryId: '',
-    imageUrl: ''
+    imageUrl: '',
+    isActive: true
   });
   const [selectedImage, setSelectedImage] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -110,22 +111,33 @@ const ProductsManagement = () => {
       }
 
       const data = {
-        ...productForm,
+        name: productForm.name,
+        sku: productForm.sku || '',
+        description: productForm.description || '',
         price: parseFloat(productForm.price),
         stock: parseInt(productForm.stock),
         categoryId: parseInt(productForm.categoryId),
-        imageUrl: imageUrl
+        imageUrl: imageUrl || '',
+        isActive: productForm.isActive !== undefined ? productForm.isActive : true
       };
+
+      console.log('Sending product data:', data);
 
       if (editingProduct) {
         const response = await productAPI.update(editingProduct.id, data);
+        console.log('Update response:', response);
         if (response.code === 1000) {
           alert('Cập nhật sản phẩm thành công!');
+        } else {
+          alert(`Lỗi: ${response.message || 'Không thể cập nhật sản phẩm'}`);
         }
       } else {
         const response = await productAPI.create(data);
+        console.log('Create response:', response);
         if (response.code === 1000) {
           alert('Thêm sản phẩm thành công!');
+        } else {
+          alert(`Lỗi: ${response.message || 'Không thể thêm sản phẩm'}`);
         }
       }
       
@@ -166,7 +178,8 @@ const ProductsManagement = () => {
         price: product.price || '',
         stock: product.stock || '',
         categoryId: product.category?.id || '',
-        imageUrl: product.imageUrl || ''
+        imageUrl: product.imageUrl || '',
+        isActive: product.isActive !== undefined ? product.isActive : true
       });
       setImagePreview(product.imageUrl || null);
     } else {
@@ -183,7 +196,8 @@ const ProductsManagement = () => {
       price: '',
       stock: '',
       categoryId: '',
-      imageUrl: ''
+      imageUrl: '',
+      isActive: true
     });
     setSelectedImage(null);
     setImagePreview(null);

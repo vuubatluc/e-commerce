@@ -46,6 +46,7 @@ function Login() {
           const userInfo = await userAPI.getMyInfo();
           if (userInfo.result) {
             localStorage.setItem('userInfo', JSON.stringify(userInfo.result));
+            localStorage.setItem('userId', userInfo.result.id); // Lưu userId
             const roles = userInfo.result.roles ? userInfo.result.roles.map(r => r.name) : [];
             localStorage.setItem('roles', JSON.stringify(roles));
             

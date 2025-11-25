@@ -494,3 +494,36 @@ export const addressAPI = {
     return handleResponse(response);
   }
 };
+
+// Dashboard API
+export const dashboardAPI = {
+  // GET /dashboard/summary?from=2025-11-01&to=2025-11-30
+  // Response: { revenue, totalOrders, totalCustomers, totalProductsSold }
+  getSummary: async (from, to) => {
+    const response = await fetch(`${API_BASE_URL}/dashboard/summary?from=${from}&to=${to}`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  // GET /dashboard/daily-revenue?from=2025-11-19&to=2025-11-25
+  // Response: [{ date, revenue }]
+  getDailyRevenue: async (from, to) => {
+    const response = await fetch(`${API_BASE_URL}/dashboard/daily-revenue?from=${from}&to=${to}`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  // GET /dashboard/top-products?from=2025-11-01&to=2025-11-30&limit=5
+  // Response: [{ productId, productName, quantitySold, productImage }]
+  getTopProducts: async (from, to, limit = 5) => {
+    const response = await fetch(`${API_BASE_URL}/dashboard/top-products?from=${from}&to=${to}&limit=${limit}`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  }
+};
