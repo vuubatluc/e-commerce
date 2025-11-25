@@ -360,3 +360,137 @@ export const productAPI = {
     return handleResponse(response);
   }
 };
+
+// Order API
+export const orderAPI = {
+  // GET /orders - Lấy tất cả đơn hàng (có phân trang)
+  getAll: async (page = 0, size = 10, sortBy = 'placedAt', direction = 'DESC') => {
+    const params = new URLSearchParams();
+    params.append('page', page);
+    params.append('size', size);
+    params.append('sortBy', sortBy);
+    params.append('direction', direction);
+    
+    const response = await fetch(`${API_BASE_URL}/orders?${params.toString()}`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  // GET /orders/user/{userId} - Lấy đơn hàng theo user
+  getByUserId: async (userId, page = 0, size = 10, sortBy = 'placedAt', direction = 'DESC') => {
+    const params = new URLSearchParams();
+    params.append('page', page);
+    params.append('size', size);
+    params.append('sortBy', sortBy);
+    params.append('direction', direction);
+    
+    const response = await fetch(`${API_BASE_URL}/orders/user/${userId}?${params.toString()}`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  // GET /orders/{id} - Lấy chi tiết đơn hàng
+  getById: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/orders/${id}`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  // POST /orders - Tạo đơn hàng mới
+  // Body: { userId, addressId, items: [{ productId, quantity }], shippingFee, note }
+  create: async (orderData) => {
+    const response = await fetch(`${API_BASE_URL}/orders`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(orderData)
+    });
+    return handleResponse(response);
+  },
+
+  // PUT /orders/{id} - Cập nhật đơn hàng
+  // Body: { status, note }
+  update: async (id, orderData) => {
+    const response = await fetch(`${API_BASE_URL}/orders/${id}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(orderData)
+    });
+    return handleResponse(response);
+  },
+
+  // DELETE /orders/{id} - Xóa đơn hàng
+  delete: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/orders/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  }
+};
+
+// Address API
+export const addressAPI = {
+  // GET /addresses - Lấy tất cả địa chỉ
+  getAll: async () => {
+    const response = await fetch(`${API_BASE_URL}/addresses`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  // GET /addresses/user/{userId} - Lấy địa chỉ theo user
+  getByUserId: async (userId) => {
+    const response = await fetch(`${API_BASE_URL}/addresses/user/${userId}`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  // GET /addresses/{id} - Lấy chi tiết địa chỉ
+  getById: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/addresses/${id}`, {
+      method: 'GET',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  },
+
+  // POST /addresses/user/{userId} - Tạo địa chỉ mới
+  // Body: { label, street, city, state, postalCode, country }
+  create: async (userId, addressData) => {
+    const response = await fetch(`${API_BASE_URL}/addresses/user/${userId}`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(addressData)
+    });
+    return handleResponse(response);
+  },
+
+  // PUT /addresses/{id} - Cập nhật địa chỉ
+  // Body: { label, street, city, state, postalCode, country }
+  update: async (id, addressData) => {
+    const response = await fetch(`${API_BASE_URL}/addresses/${id}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(addressData)
+    });
+    return handleResponse(response);
+  },
+
+  // DELETE /addresses/{id} - Xóa địa chỉ
+  delete: async (id) => {
+    const response = await fetch(`${API_BASE_URL}/addresses/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders()
+    });
+    return handleResponse(response);
+  }
+};

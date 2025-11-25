@@ -22,7 +22,7 @@ import CartPage from "./pages/CartPage";
 import AdminDashboard from "./pages/admin/Dashboard";
 import UserManagement from "./pages/admin/UserManagement";
 import ProductsManagement from "./pages/admin/ProductsManagement";
-import OrdersManagement from "./pages/admin/OrdersManagement";
+import OrdersManagementNew from "./pages/admin/OrdersManagementNew";
 
 // Layouts
 import MainLayout from "./layouts/MainLayout";
@@ -198,7 +198,7 @@ function App() {
                 path="/dashboard/orders"
                 element={
                   <ProtectedRoute requireAdmin>
-                    <OrdersManagement />
+                    <OrdersManagementNew />
                   </ProtectedRoute>
                 }
               />
