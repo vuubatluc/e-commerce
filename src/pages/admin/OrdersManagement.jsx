@@ -1,37 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import AllOrders from './AllOrders';
+import CreateOrder from './CreateOrder';
+import EditOrder from './EditOrder';
 import './OrdersManagement.css';
 
 const OrdersManagement = () => {
+  const [view, setView] = useState('list'); // 'list', 'create', 'edit'
+  const [selectedOrder, setSelectedOrder] = useState(null);
+
   useEffect(() => {
-      document.title = 'Quản lý đơn hàng';
-    }, []);
-  const [activeTab, setActiveTab] = useState('all');
+    document.title = 'Quản lý đơn hàng';
+  }, []);
+
+  const handleCreateSuccess = () => {
+    setView('list');
+  };
+
+  const handleEdit = (order) => {
+    setSelectedOrder(order);
+    setView('edit');
+  };
+
+  const handleEditSuccess = () => {
+    setView('list');
+    setSelectedOrder(null);
+  };
 
   return (
     <div className="orders-management">
-      <div className="tabs-container">
-        <button
-          className={`tab-btn ${activeTab === 'all' ? 'active' : ''}`}
-          onClick={() => setActiveTab('all')}
-        >
-          <span className="tab-icon">📋</span>
-          Danh Sách Đơn Hàng
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'create' ? 'active' : ''}`}
-          onClick={() => setActiveTab('create')}
-        >
-          <span className="tab-icon">🛒</span>
-          Tạo Đơn Hàng
-        </button>
-      </div>
-
-      <div className="tab-content">
-        {activeTab === 'all' && <AllOrders />}
-        {activeTab === 'create' && <div style={{padding: '40px', textAlign: 'center'}}>
-          <h2>🛒 Tạo đơn hàng (Coming soon...)</h2>
-        </div>}
+      <div className="management-content">
+        {view === 'list' && (
+          <AllOrders 
+            onAddNew={() => setView('create')}
+            onEdit={handleEdit}
+          />
+        )}
+        {view === 'create' && (
+          <CreateOrder 
+            onSuccess={handleCreateSuccess} 
+            onCancel={() => setView('list')} 
+          />
+        )}
+        {view === 'edit' && selectedOrder && (
+          <EditOrder 
+            order={selectedOrder}
+            onSuccess={handleEditSuccess} 
+            onCancel={() => {
+              setView('list');
+              setSelectedOrder(null);
+            }} 
+          />
+        )}
       </div>
     </div>
   );
