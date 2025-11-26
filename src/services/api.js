@@ -1,28 +1,8 @@
 const API_BASE_URL = 'http://localhost:8080/api';
 
-// Helper function để handle response và check token expiration
+// Helper function để handle response
 const handleResponse = async (response) => {
   const data = await response.json();
-  
-  // Kiểm tra nếu token hết hạn hoặc không hợp lệ
-  if (response.status === 401 || data.code === 1007) { // 1007 là UNAUTHENTICATED code
-    // Xóa token và thông tin user
-    localStorage.removeItem('token');
-    localStorage.removeItem('userInfo');
-    localStorage.removeItem('roles');
-    
-    // Hiển thị thông báo
-    const event = new CustomEvent('tokenExpired', { 
-      detail: { message: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!' } 
-    });
-    window.dispatchEvent(event);
-    
-    // Chuyển hướng về trang login sau 2 giây
-    setTimeout(() => {
-      window.location.href = '/login';
-    }, 2000);
-  }
-  
   return data;
 };
 

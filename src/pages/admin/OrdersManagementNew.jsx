@@ -20,6 +20,8 @@ const OrdersManagementNew = () => {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddressModal, setShowAddressModal] = useState(false);
+  const [showSelectAddressModal, setShowSelectAddressModal] = useState(false);
+  const [showProductModal, setShowProductModal] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   
   // Form states for create/edit
@@ -30,6 +32,9 @@ const OrdersManagementNew = () => {
     shippingFee: 0,
     note: ''
   });
+
+  // Product quantities for modal
+  const [productQuantities, setProductQuantities] = useState({});
   
   // Form state for address
   const [addressFormData, setAddressFormData] = useState({
@@ -255,6 +260,52 @@ const OrdersManagementNew = () => {
     setShowEditModal(true);
   };
 
+  const handleOpenSelectAddress = () => {
+    if (selectedOrder && selectedOrder.userId) {
+      loadUserAddresses(selectedOrder.userId);
+      setShowSelectAddressModal(true);
+    }
+  };
+
+  const handleSelectAddress = (addressId) => {
+    setFormData({ ...formData, addressId });
+  };
+
+  const handleSaveAddressChange = async () => {
+    if (!formData.addressId) {
+      alert('Vui lòng chọn địa chỉ');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await orderAPI.update(selectedOrder.id, { addressId: formData.addressId });
+      
+      if (response.code === 1000) {
+        // Reload order detail để cập nhật địa chỉ mới
+        const detailResponse = await orderAPI.getById(selectedOrder.id);
+        if (detailResponse.code === 1000) {
+          setSelectedOrder(detailResponse.result);
+        }
+        setShowSelectAddressModal(false);
+        alert('Cập nhật địa chỉ thành công!');
+        loadOrders(); // Refresh danh sách
+      } else {
+        alert(response.message || 'Có lỗi xảy ra');
+      }
+    } catch (err) {
+      console.error('Lỗi khi cập nhật địa chỉ:', err);
+      alert('Không thể cập nhật địa chỉ');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOpenAddressForm = () => {
+    setShowSelectAddressModal(false);
+    setShowAddressModal(true);
+  };
+
   const resetForm = () => {
     setFormData({
       userId: '',
@@ -338,25 +389,30 @@ const OrdersManagementNew = () => {
   const handleCreateAddress = async (e) => {
     e.preventDefault();
     
-    if (!formData.userId) {
+    const userId = formData.userId || (selectedOrder && selectedOrder.userId);
+    if (!userId) {
       setError('Vui lòng chọn khách hàng trước');
       return;
     }
 
     try {
       setLoading(true);
-      const response = await addressAPI.create(formData.userId, addressFormData);
+      const response = await addressAPI.create(userId, addressFormData);
       
       if (response.code === 1000) {
         setShowAddressModal(false);
         resetAddressForm();
         // Reload addresses for selected user
-        await loadUserAddresses(formData.userId);
+        await loadUserAddresses(userId);
         // Auto select the new address
         if (response.result && response.result.id) {
           setFormData(prev => ({ ...prev, addressId: response.result.id }));
         }
         alert('Tạo địa chỉ thành công!');
+        // Quay lại modal chọn địa chỉ nếu đang edit
+        if (showEditModal) {
+          setShowSelectAddressModal(true);
+        }
       } else {
         setError(response.message || 'Có lỗi xảy ra');
       }
@@ -366,6 +422,56 @@ const OrdersManagementNew = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleOpenProductModal = () => {
+    // Reset quantities to empty
+    const quantities = {};
+    products.forEach(product => {
+      quantities[product.id] = '';
+    });
+    setProductQuantities(quantities);
+    setShowProductModal(true);
+  };
+
+  const handleAddProductFromModal = (productId) => {
+    const product = products.find(p => p.id === parseInt(productId));
+    const quantityValue = productQuantities[productId];
+    const quantity = parseInt(quantityValue) || 0;
+    
+    if (!product) return;
+    
+    if (quantity <= 0) {
+      alert('Vui lòng nhập số lượng hợp lệ');
+      return;
+    }
+
+    const existingItem = formData.items.find(item => item.productId === product.id);
+    
+    if (existingItem) {
+      setFormData({
+        ...formData,
+        items: formData.items.map(item =>
+          item.productId === product.id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        )
+      });
+      alert(`Đã thêm ${quantity} sản phẩm "${product.name}" vào đơn hàng`);
+    } else {
+      setFormData({
+        ...formData,
+        items: [...formData.items, { productId: product.id, quantity, productName: product.name }]
+      });
+      alert(`Đã thêm ${quantity} sản phẩm "${product.name}" vào đơn hàng`);
+    }
+  };
+
+  const handleQuantityChange = (productId, value) => {
+    setProductQuantities({
+      ...productQuantities,
+      [productId]: value
+    });
   };
 
   const addProductToOrder = (productId) => {
@@ -436,15 +542,15 @@ const OrdersManagementNew = () => {
     <div className="orders-management-new">
       <div className="page-header">
         <div className="header-left">
-          <h1>📦 Quản lý đơn hàng</h1>
+          <h1>Quản lý đơn hàng</h1>
           <p className="subtitle">Quản lý tất cả đơn hàng trong hệ thống</p>
         </div>
         <div className="header-actions">
           <button className="btn-refresh" onClick={() => loadOrders()} title="Làm mới">
-            🔄 Làm mới
+            Làm mới
           </button>
           <button className="btn-primary" onClick={() => setShowCreateModal(true)}>
-            ➕ Tạo đơn hàng mới
+            Tạo đơn hàng mới
           </button>
         </div>
       </div>
@@ -461,7 +567,7 @@ const OrdersManagementNew = () => {
         <div className="search-box">
           <input
             type="text"
-            placeholder="🔍 Tìm kiếm theo mã đơn, tên khách hàng..."
+            placeholder="Tìm kiếm theo mã đơn, tên khách hàng..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -557,7 +663,7 @@ const OrdersManagementNew = () => {
         <div className="modal-overlay" onClick={() => setShowCreateModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>➕ Tạo đơn hàng mới</h2>
+              <h2>Tạo đơn hàng mới</h2>
               <button className="btn-close" onClick={() => setShowCreateModal(false)}>✕</button>
             </div>
             
@@ -586,7 +692,7 @@ const OrdersManagementNew = () => {
                         className="btn-add-address"
                         onClick={() => setShowAddressModal(true)}
                       >
-                        ➕ Thêm địa chỉ
+                        Thêm địa chỉ
                       </button>
                     </div>
                     <select
@@ -689,7 +795,7 @@ const OrdersManagementNew = () => {
         <div className="modal-overlay" onClick={() => setShowDetailModal(false)}>
           <div className="modal-content modal-large" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>📋 Chi tiết đơn hàng #{selectedOrder.orderNumber}</h2>
+              <h2>Chi tiết đơn hàng #{selectedOrder.orderNumber}</h2>
               <button className="btn-close" onClick={() => setShowDetailModal(false)}>✕</button>
             </div>
             
@@ -723,7 +829,7 @@ const OrdersManagementNew = () => {
 
                 {selectedOrder.address && (
                   <div className="detail-section">
-                    <h3>📍 Địa chỉ giao hàng</h3>
+                    <h3>Địa chỉ giao hàng</h3>
                     <div className="detail-row">
                       <span className="label">Nhãn:</span>
                       <span className="value">{selectedOrder.address.label}</span>
@@ -746,7 +852,7 @@ const OrdersManagementNew = () => {
                 )}
 
                 <div className="detail-section">
-                  <h3>🛍️ Sản phẩm ({selectedOrder.items?.length || 0})</h3>
+                  <h3>Sản phẩm ({selectedOrder.items?.length || 0})</h3>
                   <table className="detail-items-table">
                     <thead>
                       <tr>
@@ -770,7 +876,7 @@ const OrdersManagementNew = () => {
                 </div>
 
                 <div className="detail-section">
-                  <h3>💰 Thanh toán</h3>
+                  <h3>Thanh toán</h3>
                   <div className="detail-row">
                     <span className="label">Tạm tính:</span>
                     <span className="value">{selectedOrder.subtotal?.toLocaleString('vi-VN')}₫</span>
@@ -801,14 +907,14 @@ const OrdersManagementNew = () => {
         <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
           <div className="modal-content modal-large" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>✏️ Thông tin đơn hàng #{selectedOrder.orderNumber}</h2>
+              <h2>Thông tin đơn hàng #{selectedOrder.orderNumber}</h2>
               <button className="btn-close" onClick={() => setShowEditModal(false)}>✕</button>
             </div>
             
             <form onSubmit={handleUpdateOrder}>
               <div className="modal-body">
                 <div className="detail-section">
-                  <h3>📋 Thông tin chung</h3>
+                  <h3>Thông tin chung</h3>
                   <div className="detail-row">
                     <span className="label">Mã đơn hàng:</span>
                     <span className="value order-number">#{selectedOrder.orderNumber}</span>
@@ -824,25 +930,19 @@ const OrdersManagementNew = () => {
                 </div>
 
                 <div className="detail-section">
-                  <h3>📍 Địa chỉ giao hàng</h3>
-                  <div className="form-group">
-                    <label>Chọn địa chỉ *</label>
-                    <select
-                      value={formData.addressId}
-                      onChange={(e) => setFormData({ ...formData, addressId: e.target.value })}
-                      required
-                    >
-                      <option value="">-- Chọn địa chỉ --</option>
-                      {addresses.map(address => (
-                        <option key={address.id} value={address.id}>
-                          {address.label} - {address.street}, {address.city}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <h3>Địa chỉ giao hàng</h3>
                   {selectedOrder.address && (
                     <div className="address-display">
-                      <p><strong>Địa chỉ hiện tại:</strong></p>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <p><strong>Địa chỉ hiện tại:</strong></p>
+                        <button 
+                          type="button" 
+                          className="btn-edit-address"
+                          onClick={handleOpenSelectAddress}
+                        >
+                          Sửa địa chỉ
+                        </button>
+                      </div>
                       <p>{selectedOrder.address.label} - {selectedOrder.address.street}, {selectedOrder.address.city}
                       {selectedOrder.address.state && `, ${selectedOrder.address.state}`}
                       {selectedOrder.address.postalCode && ` - ${selectedOrder.address.postalCode}`}</p>
@@ -851,23 +951,16 @@ const OrdersManagementNew = () => {
                 </div>
 
                 <div className="detail-section">
-                  <h3>🛍️ Sản phẩm</h3>
+                  <h3>Sản phẩm</h3>
                   
                   <div className="form-group">
-                    <label>Thêm sản phẩm</label>
-                    <select onChange={(e) => {
-                      if (e.target.value) {
-                        addProductToOrder(e.target.value);
-                        e.target.value = '';
-                      }
-                    }}>
-                      <option value="">-- Thêm sản phẩm --</option>
-                      {products.map(product => (
-                        <option key={product.id} value={product.id}>
-                          {product.name} - {product.price?.toLocaleString('vi-VN')}₫
-                        </option>
-                      ))}
-                    </select>
+                    <button 
+                      type="button" 
+                      className="btn-add-product"
+                      onClick={handleOpenProductModal}
+                    >
+                      Thêm sản phẩm
+                    </button>
                   </div>
 
                   {formData.items.length > 0 && (
@@ -898,7 +991,7 @@ const OrdersManagementNew = () => {
                 </div>
 
                 <div className="detail-section">
-                  <h3>💰 Thanh toán</h3>
+                  <h3>Thanh toán</h3>
                   
                   <div className="form-group">
                     <label>Phí vận chuyển (₫)</label>
@@ -931,7 +1024,7 @@ const OrdersManagementNew = () => {
                 </div>
 
                 <div className="detail-section">
-                  <h3>⚙️ Trạng thái & Ghi chú</h3>
+                  <h3>Trạng thái & Ghi chú</h3>
                   
                   <div className="form-group">
                     <label>Trạng thái *</label>
@@ -974,7 +1067,7 @@ const OrdersManagementNew = () => {
                     }
                   }}
                 >
-                  🗑️ Xóa
+                  Xóa
                 </button>
                 <button type="submit" className="btn-primary" disabled={loading}>
                   {loading ? 'Đang cập nhật...' : 'Cập nhật'}
@@ -990,7 +1083,7 @@ const OrdersManagementNew = () => {
         <div className="modal-overlay" onClick={() => setShowAddressModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>📍 Thêm địa chỉ mới</h2>
+              <h2>Thêm địa chỉ mới</h2>
               <button className="btn-close" onClick={() => setShowAddressModal(false)}>✕</button>
             </div>
             
@@ -1108,6 +1201,119 @@ const OrdersManagementNew = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal chọn địa chỉ */}
+      {showSelectAddressModal && (
+        <div className="modal-overlay" onClick={() => setShowSelectAddressModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Chọn địa chỉ giao hàng</h2>
+              <button className="btn-close" onClick={() => setShowSelectAddressModal(false)}>✕</button>
+            </div>
+            
+            <div className="modal-body">
+              {addresses.length === 0 ? (
+                <p className="no-data">Khách hàng chưa có địa chỉ nào</p>
+              ) : (
+                <div className="address-list">
+                  {addresses.map(address => (
+                    <div 
+                      key={address.id} 
+                      className={`address-item ${formData.addressId === address.id ? 'selected' : ''}`}
+                      onClick={() => handleSelectAddress(address.id)}
+                    >
+                      <div className="address-info">
+                        <h4>{address.label}</h4>
+                        <p>{address.street}</p>
+                        <p className="address-detail">
+                          {address.postalCode && `${address.postalCode}, `}
+                          {address.state && `${address.state}, `}
+                          {address.city}
+                        </p>
+                      </div>
+                      {formData.addressId === address.id && (
+                        <span className="check-icon">✓</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="modal-footer">
+              <button type="button" className="btn-secondary" onClick={() => setShowSelectAddressModal(false)}>
+                Đóng
+              </button>
+              <button type="button" className="btn-primary" onClick={handleOpenAddressForm}>
+                Thêm địa chỉ mới
+              </button>
+              <button 
+                type="button" 
+                className="btn-success" 
+                onClick={handleSaveAddressChange}
+                disabled={!formData.addressId || loading}
+              >
+                {loading ? 'Đang lưu...' : 'Lưu thay đổi'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal chọn sản phẩm */}
+      {showProductModal && (
+        <div className="modal-overlay" onClick={() => setShowProductModal(false)}>
+          <div className="modal-content modal-large" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Chọn sản phẩm thêm vào đơn hàng</h2>
+              <button className="btn-close" onClick={() => setShowProductModal(false)}>✕</button>
+            </div>
+            
+            <div className="modal-body">
+              {products.length === 0 ? (
+                <p className="no-data">Không có sản phẩm nào</p>
+              ) : (
+                <div className="product-list">
+                  {products.map(product => (
+                    <div key={product.id} className="product-item">
+                      <div className="product-info">
+                        <h4>{product.name}</h4>
+                        <p className="product-price">{product.price?.toLocaleString('vi-VN')}₫</p>
+                        <p className="product-stock">Kho: {product.quantity}</p>
+                      </div>
+                      <div className="product-actions">
+                        <input
+                          type="number"
+                          min="1"
+                          max={product.quantity}
+                          value={productQuantities[product.id] || ''}
+                          onChange={(e) => handleQuantityChange(product.id, e.target.value)}
+                          className="quantity-input"
+                          placeholder="Nhập SL"
+                        />
+                        <button
+                          type="button"
+                          className="btn-add-item"
+                          onClick={() => handleAddProductFromModal(product.id)}
+                          disabled={product.quantity === 0}
+                        >
+                          Thêm
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="modal-footer">
+              <button type="button" className="btn-secondary" onClick={() => setShowProductModal(false)}>
+                Đóng
+              </button>
+            </div>
           </div>
         </div>
       )}

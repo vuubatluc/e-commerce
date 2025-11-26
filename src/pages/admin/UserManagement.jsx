@@ -449,14 +449,16 @@ function UserManagement() {
             </Button>
           </div>
           <div className="filter-section">
-            <Input
-              label="Tìm kiếm"
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Nhập tên đăng nhập, email hoặc số điện thoại"
-              containerClassName="filter-input"
-            />
+            <div className="search-input-wrapper">
+              <label className="search-label">Tìm kiếm</label>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Nhập tên đăng nhập, email hoặc số điện thoại"
+                className="search-input"
+              />
+            </div>
             {searchTerm && (
               <Button 
                 onClick={() => setSearchTerm('')} 
@@ -677,11 +679,11 @@ function UserManagement() {
           <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ddd' }}>
             <thead>
               <tr>
-                <th style={{ padding: '12px', border: '1px solid #ddd', backgroundColor: '#f5f5f5', textAlign: 'left' }}>
+                <th style={{ padding: '12px', border: '1px solid #ddd', backgroundColor: '#f5f5f5', textAlign: 'left', color: '#000' }}>
                   Role / Permission
                 </th>
                 {permissions.map(permission => (
-                  <th key={permission.name} style={{ padding: '12px', border: '1px solid #ddd', backgroundColor: '#f5f5f5', textAlign: 'center', minWidth: '100px' }}>
+                  <th key={permission.name} style={{ padding: '12px', border: '1px solid #ddd', backgroundColor: '#f5f5f5', textAlign: 'center', minWidth: '100px', color: '#000' }}>
                     {permission.name}
                   </th>
                 ))}

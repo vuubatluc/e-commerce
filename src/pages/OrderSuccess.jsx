@@ -11,7 +11,7 @@ const OrderSuccess = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    document.title = 'Đặt hàng thành công - E-Commerce';
+    document.title = 'Đặt hàng thành công';
     loadOrder();
   }, [orderId]);
 

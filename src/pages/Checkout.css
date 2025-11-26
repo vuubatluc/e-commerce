@@ -77,12 +77,12 @@
 }
 
 .address-item:hover {
-  border-color: #667eea;
+  border-color: #ff6b35;
   background: #f8f9fa;
 }
 
 .address-item.selected {
-  border-color: #667eea;
+  border-color: #ff6b35;
   background: #e7f0ff;
 }
 
@@ -110,20 +110,21 @@
 }
 
 .btn-add-address {
-  width: 100%;
-  padding: 12px;
-  background: #28a745;
+  display: inline-block;
+  width: auto;
+  padding: 10px 20px;
+  background: #ff6b35;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.3s ease;
 }
 
 .btn-add-address:hover {
-  background: #218838;
+  background: #ff8c42;
 }
 
 /* Address Form */
@@ -156,7 +157,7 @@
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #ff6b35;
 }
 
 .form-row {
@@ -168,7 +169,7 @@
 .btn-submit {
   width: 100%;
   padding: 12px;
-  background: #667eea;
+  background: #ff6b35;
   color: white;
   border: none;
   border-radius: 8px;
@@ -201,7 +202,7 @@
 
 .order-note:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #ff6b35;
 }
 
 /* Order Summary */
@@ -278,7 +279,7 @@
 .total-final {
   font-size: 1.3rem;
   font-weight: 700;
-  color: #667eea;
+  color: #ff6b35;
   margin-top: 15px;
   padding-top: 15px;
   border-top: 2px solid #f0f0f0;
@@ -287,7 +288,7 @@
 .btn-place-order {
   width: 100%;
   padding: 15px;
-  background: #28a745;
+  background: #ff6b35;
   color: white;
   border: none;
   border-radius: 8px;
@@ -299,7 +300,7 @@
 }
 
 .btn-place-order:hover:not(:disabled) {
-  background: #218838;
+  background: #ff8c42;
 }
 
 .btn-place-order:disabled {

@@ -118,11 +118,18 @@ function Navbar({ variant = 'default' }) {
           {isLoggedIn ? (
             <>
               {!isAdmin && (
-                <li className="navbar-item">
-                  <Link to="/cart" className="navbar-link navbar-cart">
-                    Giỏ hàng
-                  </Link>
-                </li>
+                <>
+                  <li className="navbar-item">
+                    <Link to="/cart" className="navbar-link navbar-cart">
+                      Giỏ hàng
+                    </Link>
+                  </li>
+                  <li className="navbar-item">
+                    <Link to="/profile/orders" className="navbar-link">
+                      Lịch sử đơn hàng
+                    </Link>
+                  </li>
+                </>
               )}
               <li className="navbar-item navbar-dropdown" ref={dropdownRef}>
                 <button 
