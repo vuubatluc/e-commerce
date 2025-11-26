@@ -167,7 +167,7 @@ const DashboardNew = () => {
   return (
     <div className="dashboard-new">
       <div className="dashboard-header">
-        <h1>📊 Dashboard - Tổng Quan</h1>
+        <h1>Dashboard - Tổng Quan</h1>
         <p className="dashboard-subtitle">Thống kê và phân tích dữ liệu kinh doanh</p>
       </div>
 
@@ -210,7 +210,7 @@ const DashboardNew = () => {
 
         <div className="summary-cards">
           <div className="summary-card revenue-card">
-            <div className="card-icon">💰</div>
+            <div className="card-icon"></div>
             <div className="card-content">
               <h3>Doanh Thu</h3>
               <p className="card-value">{formatCurrency(summary.revenue)}</p>
@@ -219,7 +219,7 @@ const DashboardNew = () => {
           </div>
 
           <div className="summary-card orders-card">
-            <div className="card-icon">📦</div>
+            <div className="card-icon"></div>
             <div className="card-content">
               <h3>Đơn Hàng</h3>
               <p className="card-value">{summary.totalOrders}</p>
@@ -228,7 +228,7 @@ const DashboardNew = () => {
           </div>
 
           <div className="summary-card customers-card">
-            <div className="card-icon">👥</div>
+            <div className="card-icon"></div>
             <div className="card-content">
               <h3>Khách Hàng</h3>
               <p className="card-value">{summary.totalCustomers}</p>
@@ -237,7 +237,7 @@ const DashboardNew = () => {
           </div>
 
           <div className="summary-card products-card">
-            <div className="card-icon">📊</div>
+            <div className="card-icon"></div>
             <div className="card-content">
               <h3>Sản Phẩm Đã Bán</h3>
               <p className="card-value">{summary.totalProductsSold}</p>
@@ -272,7 +272,7 @@ const DashboardNew = () => {
 
         {dailyRevenue.length === 0 ? (
           <div className="no-data">
-            <p>📊 Không có dữ liệu doanh thu trong khoảng thời gian này</p>
+            <p>Không có dữ liệu doanh thu trong khoảng thời gian này</p>
           </div>
         ) : (
           <div className="revenue-chart">
@@ -326,7 +326,7 @@ const DashboardNew = () => {
 
         {topProducts.length === 0 ? (
           <div className="no-data">
-            <p>📦 Không có dữ liệu sản phẩm trong khoảng thời gian này</p>
+            <p>Không có dữ liệu sản phẩm trong khoảng thời gian này</p>
           </div>
         ) : (
           <div className="top-products-list">
@@ -337,7 +337,7 @@ const DashboardNew = () => {
                   {product.productImage ? (
                     <img src={product.productImage} alt={product.productName} />
                   ) : (
-                    <div className="no-image">📷</div>
+                    <div className="no-image"></div>
                   )}
                 </div>
                 <div className="product-info">

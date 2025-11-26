@@ -126,15 +126,9 @@ const ProductDetail = () => {
         <div className="product-info">
           <h1 className="product-title">{product.name}</h1>
 
-          <div className="product-rating">
-            <div className="rating-stars">
-              <span className="stars">⭐⭐⭐⭐⭐</span>
-              <span className="rating-text">5.0</span>
-            </div>
-            <div className="divider">|</div>
-            <div className="sold-count">
-              <span>Đã bán: {product.sold || 0}</span>
-            </div>
+          {/* rating removed - show only sold count */}
+          <div className="sold-count">
+            <span>Đã bán: {product.sold || 0}</span>
           </div>
 
           <div className="product-price-section">

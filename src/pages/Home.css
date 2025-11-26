@@ -6,7 +6,8 @@
 
 /* Hero Section */
 .hero-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* changed to blue gradient per request */
+  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
   color: white;
   padding: 80px 20px;
   text-align: center;
@@ -62,12 +63,13 @@
 }
 
 .search-button {
-  background: #667eea;
+  /* changed to blue tone */
+  background: linear-gradient(90deg, #0d6efd 0%, #0a58ca 100%);
   color: white;
 }
 
 .search-button:hover {
-  background: #5568d3;
+  background: linear-gradient(90deg, #0a58ca 0%, #0846a8 100%);
   transform: translateY(-2px);
 }
 
@@ -186,12 +188,25 @@
 
 .product-image {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
   width: 100%;
   height: 100%;
+  display: block;
   object-fit: cover;
+  object-position: center center;
   transition: transform 0.3s ease;
+}
+
+/* More specific rule to override global admin styles that also use `.product-image` */
+.products-section .products-grid .product-card .product-image,
+.product-image-wrapper > .product-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center center;
 }
 
 .product-card:hover .product-image {
