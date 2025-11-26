@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: e-commerce
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/e_commerce_project?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
+    username: root
+    password: Minhvu147@
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  web:
+    resources:
+      static-locations: classpath:/static/
+      cache:
+        period: 0
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: vuminh69w@gmail.com
+    password: jiul iygk bhev hdsa
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+
+jwt:
+  signerKey: "faed9f589c3e55f64da992108879d6e0ac38f10522f356a59ed8a353447870ae"
+
+# Logging configuration
+logging:
+  level:
+    com.vu.springapi: DEBUG
+    org.springframework.web: DEBUG
