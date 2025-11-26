@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { productAPI, categoryAPI } from '../services/api';
 import { cartAPI } from '../services/cartApi';
+import ProductImage from '../components/common/ProductImage'; // Import the new component
 import './Home.css';
 
 const Home = () => {
@@ -277,10 +278,7 @@ const Home = () => {
 
       {/* Products Grid */}
       <section className="products-section">
-        <div className="section-header">
-          <h2>Sản phẩm của chúng tôi</h2>
-          <p>Tìm thấy {products.length} sản phẩm</p>
-        </div>
+        
 
         {products.length === 0 ? (
           <div className="no-products">
@@ -298,26 +296,7 @@ const Home = () => {
                     <span className="badge badge-favorite">Yêu thích</span>
                   </div>
 
-                  {product.imageUrl ? (
-                    <img 
-                      src={product.imageUrl} 
-                      alt={product.name}
-                      loading="lazy"
-                      className="product-image"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        const noImageDiv = document.createElement('div');
-                        noImageDiv.className = 'no-image';
-                        noImageDiv.innerHTML = '<span>📷</span><p>Chưa có ảnh</p>';
-                        e.target.parentElement.appendChild(noImageDiv);
-                      }}
-                    />
-                  ) : (
-                    <div className="no-image">
-                      <span>📷</span>
-                      <p>Chưa có ảnh</p>
-                    </div>
-                  )}
+                  <ProductImage src={product.imageUrl} alt={product.name} />
 
                   {product.stock === 0 && (
                     <div className="badge-out-of-stock">Hết hàng</div>
@@ -344,7 +323,6 @@ const Home = () => {
                   </div>
                   
                   <div className="product-footer">
-                    <span className="sold-count">Đã bán {product.sold || 0}</span>
                     <button 
                       className="btn-add-cart"
                       onClick={(e) => {
