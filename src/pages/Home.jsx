@@ -344,7 +344,6 @@ const Home = () => {
                   </div>
                   
                   <div className="product-footer">
-                    <span className="sold-count">Đã bán {product.sold || 0}</span>
                     <button 
                       className="btn-add-cart"
                       onClick={(e) => {
