@@ -93,7 +93,7 @@
 }
 
 .forgot-password-link a {
-  color: #3498db;
+  color: #ff6b35;
   font-size: 14px;
 }
 
@@ -153,7 +153,7 @@
 .link-button {
   background: none;
   border: none;
-  color: #3498db;
+  color: #ff6b35;
   cursor: pointer;
   font-size: 14px;
   text-decoration: none;
@@ -163,7 +163,7 @@
 
 .link-button:hover {
   text-decoration: underline;
-  color: #2980b9;
+  color: #ff8c42;
 }
 
 .link-button:disabled {
@@ -177,7 +177,7 @@
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 20px;
-  border-left: 4px solid #28a745;
+  border-left: 4px solid #ff6b35;
   font-size: 14px;
 }
 

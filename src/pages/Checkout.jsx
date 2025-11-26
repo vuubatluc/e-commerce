@@ -288,7 +288,7 @@ const Checkout = () => {
   return (
     <div className="checkout-page">
       <div className="checkout-header">
-        <h1>🛒 Thanh toán</h1>
+        <h1>Thanh toán</h1>
         <p>Vui lòng kiểm tra thông tin và hoàn tất đơn hàng</p>
       </div>
 
@@ -303,7 +303,7 @@ const Checkout = () => {
         <div className="checkout-left">
           {/* Shipping Address */}
           <div className="section-card">
-            <h2>📍 Địa chỉ giao hàng</h2>
+            <h2>Địa chỉ giao hàng</h2>
             
             {addresses.length > 0 ? (
               <div className="address-list">
@@ -336,7 +336,7 @@ const Checkout = () => {
               className="btn-add-address"
               onClick={handleShowAddressForm}
             >
-              {showAddressForm ? '✕ Hủy' : '➕ Thêm địa chỉ mới'}
+              {showAddressForm ? 'Hủy' : 'Thêm địa chỉ mới'}
             </button>
 
             {showAddressForm && (
@@ -438,7 +438,7 @@ const Checkout = () => {
 
           {/* Order Note */}
           <div className="section-card">
-            <h2>📝 Ghi chú đơn hàng</h2>
+            <h2>Ghi chú đơn hàng</h2>
             <textarea
               className="order-note"
               value={note}
@@ -452,7 +452,7 @@ const Checkout = () => {
         {/* Right - Order Summary */}
         <div className="checkout-right">
           <div className="order-summary">
-            <h2>📋 Đơn hàng ({cart.totalItems} sản phẩm)</h2>
+            <h2>Đơn hàng ({cart.totalItems} sản phẩm)</h2>
             
             <div className="summary-items">
               {cart.cartItems.map(item => (
@@ -493,7 +493,7 @@ const Checkout = () => {
               onClick={handlePlaceOrder}
               disabled={loading || !selectedAddressId}
             >
-              {loading ? 'Đang xử lý...' : '🛒 Đặt hàng'}
+              {loading ? 'Đang xử lý...' : 'Đặt hàng'}
             </button>
 
             <button 
@@ -504,7 +504,7 @@ const Checkout = () => {
             </button>
 
             <p className="payment-note">
-              💳 Thanh toán khi nhận hàng (COD)
+              Thanh toán khi nhận hàng (COD)
             </p>
           </div>
         </div>

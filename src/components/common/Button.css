@@ -53,12 +53,12 @@
 
 /* Success Button */
 .btn-success {
-  background: #27ae60;
+  background: #ff6b35;
   color: white;
 }
 
 .btn-success:hover:not(:disabled) {
-  background: #229954;
+  background: #ff8c42;
 }
 
 /* Icon Button */
@@ -93,26 +93,26 @@
 
 /* Info Button */
 .btn-info {
-  background: #3498db;
+  background: #ff6b35;
   color: white;
 }
 
 .btn-info:hover:not(:disabled) {
-  background: #2980b9;
+  background: #ff8c42;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
 }
 
 /* Link Button */
 .btn-link {
   background: transparent;
-  color: #3498db;
+  color: #ff6b35;
   text-decoration: underline;
   padding: 8px 12px;
 }
 
 .btn-link:hover:not(:disabled) {
-  color: #2980b9;
+  color: #ff8c42;
   background: transparent;
   transform: none;
 }

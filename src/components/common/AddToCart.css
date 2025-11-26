@@ -1,5 +1,5 @@
 .add-to-cart-btn {
-  background-color: #28a745;
+  background-color: #ff6b35;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -11,5 +11,5 @@
 }
 
 .add-to-cart-btn:hover {
-  background-color: #218838;
+  background-color: #ff8c42;
 }

@@ -149,13 +149,6 @@ function CartPage() {
 
   return (
     <div className="cart-page">
-      <div className="cart-header">
-        <h1>🛒 Giỏ hàng của bạn</h1>
-        <Link to="/" className="btn-continue">
-          ← Tiếp tục mua sắm
-        </Link>
-      </div>
-
       {error && (
         <div className="alert alert-error">
           {error}
@@ -164,7 +157,6 @@ function CartPage() {
 
       {isEmpty ? (
         <div className="empty-cart">
-          <div className="empty-icon">🛒</div>
           <h2>Giỏ hàng trống</h2>
           <p>Hãy thêm sản phẩm vào giỏ hàng của bạn</p>
           <Link to="/">
@@ -182,7 +174,7 @@ function CartPage() {
                 onClick={handleClearCart}
                 disabled={updating}
               >
-                🗑️ Xóa tất cả
+                Xóa tất cả
               </button>
             </div>
 
@@ -271,7 +263,7 @@ function CartPage() {
             </button>
 
             <p className="note">
-              💡 Phí vận chuyển sẽ được tính ở bước tiếp theo
+              Phí vận chuyển sẽ được tính ở bước tiếp theo
             </p>
           </div>
         </div>

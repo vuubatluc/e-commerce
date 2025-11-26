@@ -167,7 +167,7 @@ const DashboardNew = () => {
   return (
     <div className="dashboard-new">
       <div className="dashboard-header">
-        <h1>📊 Dashboard - Tổng Quan</h1>
+        <h1>Dashboard - Tổng Quan</h1>
         <p className="dashboard-subtitle">Thống kê và phân tích dữ liệu kinh doanh</p>
       </div>
 
@@ -210,7 +210,6 @@ const DashboardNew = () => {
 
         <div className="summary-cards">
           <div className="summary-card revenue-card">
-            <div className="card-icon">💰</div>
             <div className="card-content">
               <h3>Doanh Thu</h3>
               <p className="card-value">{formatCurrency(summary.revenue)}</p>
@@ -219,7 +218,6 @@ const DashboardNew = () => {
           </div>
 
           <div className="summary-card orders-card">
-            <div className="card-icon">📦</div>
             <div className="card-content">
               <h3>Đơn Hàng</h3>
               <p className="card-value">{summary.totalOrders}</p>
@@ -228,7 +226,7 @@ const DashboardNew = () => {
           </div>
 
           <div className="summary-card customers-card">
-            <div className="card-icon">👥</div>
+
             <div className="card-content">
               <h3>Khách Hàng</h3>
               <p className="card-value">{summary.totalCustomers}</p>
@@ -237,7 +235,6 @@ const DashboardNew = () => {
           </div>
 
           <div className="summary-card products-card">
-            <div className="card-icon">📊</div>
             <div className="card-content">
               <h3>Sản Phẩm Đã Bán</h3>
               <p className="card-value">{summary.totalProductsSold}</p>
@@ -247,113 +244,116 @@ const DashboardNew = () => {
         </div>
       </section>
 
-      {/* Daily Revenue Chart Section */}
-      <section className="chart-section">
-        <div className="section-header">
-          <h2>Doanh Thu Theo Ngày</h2>
-          <div className="date-range-picker">
-            <input
-              type="date"
-              value={dateRange.dailyRevenue.from}
-              onChange={(e) => handleDateRangeChange('dailyRevenue', 'from', e.target.value)}
-              className="date-input"
-              max={new Date().toISOString().split('T')[0]}
-            />
-            <span>đến</span>
-            <input
-              type="date"
-              value={dateRange.dailyRevenue.to}
-              onChange={(e) => handleDateRangeChange('dailyRevenue', 'to', e.target.value)}
-              className="date-input"
-              max={new Date().toISOString().split('T')[0]}
-            />
-          </div>
-        </div>
-
-        {dailyRevenue.length === 0 ? (
-          <div className="no-data">
-            <p>📊 Không có dữ liệu doanh thu trong khoảng thời gian này</p>
-          </div>
-        ) : (
-          <div className="revenue-chart">
-            <div className="chart-bars">
-              {dailyRevenue.map((item, index) => {
-                const maxRevenue = Math.max(...dailyRevenue.map(d => d.revenue));
-                const heightPercent = maxRevenue > 0 ? (item.revenue / maxRevenue) * 100 : 0;
-                
-                return (
-                  <div key={index} className="chart-bar-container">
-                    <div className="chart-bar-wrapper">
-                      <div
-                        className="chart-bar"
-                        style={{ height: `${heightPercent}%` }}
-                        title={formatCurrency(item.revenue)}
-                      >
-                        <span className="bar-value">{formatCurrency(item.revenue)}</span>
-                      </div>
-                    </div>
-                    <span className="bar-label">{formatDate(item.date)}</span>
-                  </div>
-                );
-              })}
+      {/* Charts Row - Daily Revenue and Top Products side by side */}
+      <div className="charts-row">
+        {/* Daily Revenue Chart Section */}
+        <section className="chart-section">
+          <div className="section-header">
+            <h2>Doanh Thu Theo Ngày</h2>
+            <div className="date-range-picker">
+              <input
+                type="date"
+                value={dateRange.dailyRevenue.from}
+                onChange={(e) => handleDateRangeChange('dailyRevenue', 'from', e.target.value)}
+                className="date-input"
+                max={new Date().toISOString().split('T')[0]}
+              />
+              <span>đến</span>
+              <input
+                type="date"
+                value={dateRange.dailyRevenue.to}
+                onChange={(e) => handleDateRangeChange('dailyRevenue', 'to', e.target.value)}
+                className="date-input"
+                max={new Date().toISOString().split('T')[0]}
+              />
             </div>
           </div>
-        )}
-      </section>
 
-      {/* Top Products Section */}
-      <section className="top-products-section">
-        <div className="section-header">
-          <h2>Top Sản Phẩm Bán Chạy</h2>
-          <div className="date-range-picker">
-            <input
-              type="date"
-              value={dateRange.topProducts.from}
-              onChange={(e) => handleDateRangeChange('topProducts', 'from', e.target.value)}
-              className="date-input"
-              max={new Date().toISOString().split('T')[0]}
-            />
-            <span>đến</span>
-            <input
-              type="date"
-              value={dateRange.topProducts.to}
-              onChange={(e) => handleDateRangeChange('topProducts', 'to', e.target.value)}
-              className="date-input"
-              max={new Date().toISOString().split('T')[0]}
-            />
-          </div>
-        </div>
-
-        {topProducts.length === 0 ? (
-          <div className="no-data">
-            <p>📦 Không có dữ liệu sản phẩm trong khoảng thời gian này</p>
-          </div>
-        ) : (
-          <div className="top-products-list">
-            {topProducts.map((product, index) => (
-              <div key={index} className="product-item">
-                <div className="product-rank">#{index + 1}</div>
-                <div className="product-image">
-                  {product.productImage ? (
-                    <img src={product.productImage} alt={product.productName} />
-                  ) : (
-                    <div className="no-image">📷</div>
-                  )}
-                </div>
-                <div className="product-info">
-                  <h4>{product.productName}</h4>
-                  <span className="product-id">ID: {product.productId}</span>
-                </div>
-                <div className="product-stats">
-                  <span className="quantity-sold">
-                    <strong>{product.quantitySold}</strong> đã bán
-                  </span>
-                </div>
+          {dailyRevenue.length === 0 ? (
+            <div className="no-data">
+              <p>📊 Không có dữ liệu doanh thu trong khoảng thời gian này</p>
+            </div>
+          ) : (
+            <div className="revenue-chart">
+              <div className="chart-bars">
+                {dailyRevenue.map((item, index) => {
+                  const maxRevenue = Math.max(...dailyRevenue.map(d => d.revenue));
+                  const heightPercent = maxRevenue > 0 ? (item.revenue / maxRevenue) * 100 : 0;
+                  
+                  return (
+                    <div key={index} className="chart-bar-container">
+                      <div className="chart-bar-wrapper">
+                        <div
+                          className="chart-bar"
+                          style={{ height: `${heightPercent}%` }}
+                          title={formatCurrency(item.revenue)}
+                        >
+                          <span className="bar-value">{formatCurrency(item.revenue)}</span>
+                        </div>
+                      </div>
+                      <span className="bar-label">{formatDate(item.date)}</span>
+                    </div>
+                  );
+                })}
               </div>
-            ))}
+            </div>
+          )}
+        </section>
+
+        {/* Top Products Section */}
+        <section className="top-products-section">
+          <div className="section-header">
+            <h2>Top Sản Phẩm Bán Chạy</h2>
+            <div className="date-range-picker">
+              <input
+                type="date"
+                value={dateRange.topProducts.from}
+                onChange={(e) => handleDateRangeChange('topProducts', 'from', e.target.value)}
+                className="date-input"
+                max={new Date().toISOString().split('T')[0]}
+              />
+              <span>đến</span>
+              <input
+                type="date"
+                value={dateRange.topProducts.to}
+                onChange={(e) => handleDateRangeChange('topProducts', 'to', e.target.value)}
+                className="date-input"
+                max={new Date().toISOString().split('T')[0]}
+              />
+            </div>
           </div>
-        )}
-      </section>
+
+          {topProducts.length === 0 ? (
+            <div className="no-data">
+              <p>📦 Không có dữ liệu sản phẩm trong khoảng thời gian này</p>
+            </div>
+          ) : (
+            <div className="top-products-list">
+              {topProducts.map((product, index) => (
+                <div key={index} className="product-item">
+                  <div className="product-rank">#{index + 1}</div>
+                  <div className="product-image">
+                    {product.productImage ? (
+                      <img src={product.productImage} alt={product.productName} />
+                    ) : (
+                      <div className="no-image">📷</div>
+                    )}
+                  </div>
+                  <div className="product-info">
+                    <h4>{product.productName}</h4>
+                    <span className="product-id">ID: {product.productId}</span>
+                  </div>
+                  <div className="product-stats">
+                    <span className="quantity-sold">
+                      <strong>{product.quantitySold}</strong> đã bán
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   );
 };

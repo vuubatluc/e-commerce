@@ -1,30 +1,59 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { productAPI } from '../services/api';
+import { productAPI, categoryAPI } from '../services/api';
 import { cartAPI } from '../services/cartApi';
 import './Home.css';
 
 const Home = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
   const [addingToCart, setAddingToCart] = useState({});
   const [successMessage, setSuccessMessage] = useState('');
+  
+  // Filter states
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [priceRange, setPriceRange] = useState({ min: '', max: '' });
 
   useEffect(() => {
     loadProducts();
+    loadCategories();
   }, []);
+
+  const loadCategories = async () => {
+    try {
+      const response = await categoryAPI.getAll();
+      if (response.code === 1000) {
+        setCategories(response.result || []);
+      }
+    } catch (err) {
+      console.error('Error loading categories:', err);
+    }
+  };
 
   const loadProducts = async (keyword = '') => {
     try {
       setLoading(true);
       setError('');
-      const response = await productAPI.getProducts(keyword || null, null, 0, 100);
+      const response = await productAPI.getProducts(keyword || null, selectedCategory, 0, 100);
       
       if (response.code === 1000) {
-        setProducts(response.result.content || []);
+        let filteredProducts = response.result.content || [];
+        
+        // Filter by price range
+        if (priceRange.min !== '' || priceRange.max !== '') {
+          filteredProducts = filteredProducts.filter(product => {
+            const price = product.price;
+            const min = priceRange.min === '' ? 0 : parseFloat(priceRange.min);
+            const max = priceRange.max === '' ? Infinity : parseFloat(priceRange.max);
+            return price >= min && price <= max;
+          });
+        }
+        
+        setProducts(filteredProducts);
       } else {
         setError('Không thể tải danh sách sản phẩm');
       }
@@ -41,10 +70,34 @@ const Home = () => {
     loadProducts(searchKeyword);
   };
 
+  const handleCategoryChange = (categoryId) => {
+    setSelectedCategory(categoryId === selectedCategory ? null : categoryId);
+  };
+
+  const handlePriceRangeChange = (field, value) => {
+    setPriceRange(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleApplyFilters = () => {
+    loadProducts(searchKeyword);
+  };
+
+  const handleClearFilters = () => {
+    setSelectedCategory(null);
+    setPriceRange({ min: '', max: '' });
+    setSearchKeyword('');
+    setLoading(true);
+    setTimeout(() => loadProducts(''), 0);
+  };
+
+  useEffect(() => {
+    loadProducts(searchKeyword);
+  }, [selectedCategory]);
+
   const handleAddToCart = async (product) => {
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/login');
+      alert('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!');
       return;
     }
 
@@ -139,7 +192,7 @@ const Home = () => {
             className="search-input"
           />
           <button type="submit" className="search-button">
-            🔍 Tìm kiếm
+            Tìm kiếm
           </button>
           {searchKeyword && (
             <button
@@ -154,6 +207,57 @@ const Home = () => {
             </button>
           )}
         </form>
+      </section>
+
+      {/* Filter Section */}
+      <section className="filter-section">
+        <div className="filters-container">
+            <div className="filter-group">
+              <h3>Danh mục</h3>
+              <div className="category-filters">
+                {categories.map(category => (
+                  <label key={category.id} className="category-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={selectedCategory === category.id}
+                      onChange={() => handleCategoryChange(category.id)}
+                    />
+                    <span>{category.name}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="filter-group">
+              <h3>Khoảng giá</h3>
+              <div className="price-range-inputs">
+                <input
+                  type="number"
+                  placeholder="Giá tối thiểu"
+                  value={priceRange.min}
+                  onChange={(e) => handlePriceRangeChange('min', e.target.value)}
+                  className="price-input"
+                />
+                <span>-</span>
+                <input
+                  type="number"
+                  placeholder="Giá tối đa"
+                  value={priceRange.max}
+                  onChange={(e) => handlePriceRangeChange('max', e.target.value)}
+                  className="price-input"
+                />
+              </div>
+            </div>
+
+            <div className="filter-actions">
+              <button onClick={handleApplyFilters} className="apply-filter-btn">
+                Áp dụng
+              </button>
+              <button onClick={handleClearFilters} className="clear-filter-btn">
+                Xóa bộ lọc
+              </button>
+            </div>
+          </div>
       </section>
 
       {/* Alerts */}

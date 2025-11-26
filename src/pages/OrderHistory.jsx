@@ -10,6 +10,8 @@ const OrderHistory = () => {
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const pageSize = 10;
 
   useEffect(() => {
@@ -79,6 +81,27 @@ const OrderHistory = () => {
     }
   };
 
+  const handleViewDetail = async (order) => {
+    try {
+      // Load full order details to get address info
+      const response = await orderAPI.getById(order.id);
+      if (response.code === 1000) {
+        setSelectedOrder(response.result);
+        setShowDetailModal(true);
+      } else {
+        setError('Không thể tải chi tiết đơn hàng');
+      }
+    } catch (err) {
+      console.error('Error loading order detail:', err);
+      setError('Đã xảy ra lỗi khi tải chi tiết đơn hàng');
+    }
+  };
+
+  const closeModal = () => {
+    setShowDetailModal(false);
+    setSelectedOrder(null);
+  };
+
   if (loading) {
     return (
       <div className="order-history-page">
@@ -104,7 +127,7 @@ const OrderHistory = () => {
   return (
     <div className="order-history-page">
       <div className="page-header">
-        <h1>📋 Lịch sử đơn hàng</h1>
+        <h1>Lịch sử đơn hàng</h1>
         <p>Quản lý và theo dõi các đơn hàng của bạn</p>
       </div>
 
@@ -119,54 +142,35 @@ const OrderHistory = () => {
         <>
           <div className="orders-list">
             {orders.map((order) => (
-              <div key={order.id} className="order-card">
-                <div className="order-card-header">
-                  <div className="order-number">
-                    <h3>Đơn hàng #{order.orderNumber}</h3>
-                    <p className="order-date">
-                      {formatDate(order.placedAt)}
-                    </p>
+              <div key={order.id} className="order-item-row">
+                <div className="order-info">
+                  <div className="order-number-inline">
+                    <strong>#{order.orderNumber}</strong>
+                  </div>
+                  <div className="order-date-inline">
+                    {formatDate(order.placedAt)}
                   </div>
                   <span className={`status-badge ${getStatusColor(order.status)}`}>
                     {getStatusText(order.status)}
                   </span>
-                </div>
-
-                <div className="order-card-body">
-                  {/* Order Items */}
-                  <div className="order-items-preview">
-                    {order.items && order.items.slice(0, 3).map((item, index) => (
-                      <div key={index} className="item-preview">
-                        <span className="item-name">{item.productName}</span>
-                        <span className="item-quantity">x{item.quantity}</span>
-                      </div>
-                    ))}
-                    {order.items && order.items.length > 3 && (
-                      <p className="more-items">
-                        +{order.items.length - 3} sản phẩm khác
-                      </p>
-                    )}
+                  <div className="order-total-inline">
+                    {formatCurrency(order.total)}
                   </div>
-
-                  {/* Total */}
-                  <div className="order-total">
-                    <span>Tổng tiền:</span>
-                    <strong>{formatCurrency(order.total)}</strong>
+                  <div className="order-items-count">
+                    {order.items?.length || 0} sản phẩm
                   </div>
                 </div>
-
-                <div className="order-card-footer">
+                
+                <div className="order-actions">
                   <button 
                     className="btn-view-detail"
-                    onClick={() => navigate(`/order-success/${order.id}`)}
+                    onClick={() => handleViewDetail(order)}
                   >
                     Xem chi tiết
                   </button>
                   
                   {order.status === 'PENDING' && (
-                    <button className="btn-cancel">
-                      Hủy đơn
-                    </button>
+                    <button className="btn-cancel">Hủy</button>
                   )}
                   
                   {order.status === 'DELIVERED' && (
@@ -212,6 +216,74 @@ const OrderHistory = () => {
             </div>
           )}
         </>
+      )}
+
+      {/* Detail Modal */}
+      {showDetailModal && selectedOrder && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Chi tiết đơn hàng #{selectedOrder.orderNumber}</h2>
+              <button className="modal-close" onClick={closeModal}>✕</button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="detail-section">
+                <h3>Thông tin đơn hàng</h3>
+                <div className="detail-row">
+                  <span>Ngày đặt:</span>
+                  <strong>{formatDate(selectedOrder.placedAt)}</strong>
+                </div>
+                <div className="detail-row">
+                  <span>Trạng thái:</span>
+                  <span className={`status-badge ${getStatusColor(selectedOrder.status)}`}>
+                    {getStatusText(selectedOrder.status)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="detail-section">
+                <h3>Địa chỉ giao hàng</h3>
+                <div className="address-info">
+                  <p><strong>Nhãn:</strong> {selectedOrder.address?.label || 'N/A'}</p>
+                  <p><strong>Địa chỉ:</strong> {selectedOrder.address?.street || 'N/A'}</p>
+                  <p><strong>Phường/Xã:</strong> {selectedOrder.address?.postalCode || 'N/A'}</p>
+                  <p><strong>Quận/Huyện:</strong> {selectedOrder.address?.state || 'N/A'}</p>
+                  <p><strong>Tỉnh/Thành:</strong> {selectedOrder.address?.city || 'N/A'}</p>
+                  <p><strong>Quốc gia:</strong> {selectedOrder.address?.country || 'N/A'}</p>
+                </div>
+              </div>
+
+              <div className="detail-section">
+                <h3>Sản phẩm</h3>
+                <div className="modal-items-list">
+                  {selectedOrder.items?.map((item, index) => (
+                    <div key={index} className="modal-item">
+                      <div className="modal-item-info">
+                        <span className="modal-item-name">{item.productName}</span>
+                        <span className="modal-item-price">{formatCurrency(item.unitPrice)} x {item.quantity}</span>
+                      </div>
+                      <strong className="modal-item-total">
+                        {formatCurrency(item.unitPrice * item.quantity)}
+                      </strong>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="detail-section">
+                <div className="detail-row total-row">
+                  <span>Tổng cộng:</span>
+                  <strong className="total-amount">{formatCurrency(selectedOrder.total)}</strong>
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button className="btn-close-modal" onClick={closeModal}>Đóng</button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
