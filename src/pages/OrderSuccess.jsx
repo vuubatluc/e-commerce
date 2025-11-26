@@ -67,7 +67,7 @@ const OrderSuccess = () => {
     return (
       <div className="order-success-page">
         <div className="error-card">
-          <h2>⚠️ {error || 'Không tìm thấy đơn hàng'}</h2>
+          <h2>{error || 'Không tìm thấy đơn hàng'}</h2>
           <button onClick={() => navigate('/')}>Về trang chủ</button>
         </div>
       </div>
@@ -77,7 +77,6 @@ const OrderSuccess = () => {
   return (
     <div className="order-success-page">
       <div className="success-header">
-        <div className="success-icon">✅</div>
         <h1>Đặt hàng thành công!</h1>
         <p>Cảm ơn bạn đã đặt hàng. Chúng tôi sẽ liên hệ với bạn sớm nhất.</p>
       </div>
@@ -96,7 +95,7 @@ const OrderSuccess = () => {
         </div>
 
         <div className="order-section">
-          <h3>📦 Sản phẩm</h3>
+          <h3>Sản phẩm</h3>
           <div className="order-items">
             {order.items.map((item, index) => (
               <div key={index} className="order-item">
@@ -114,7 +113,7 @@ const OrderSuccess = () => {
         </div>
 
         <div className="order-section">
-          <h3>📍 Địa chỉ giao hàng</h3>
+          <h3>Địa chỉ giao hàng</h3>
           {order.address && (
             <div className="address-info">
               <p><strong>{order.address.label}</strong></p>
@@ -127,13 +126,13 @@ const OrderSuccess = () => {
 
         {order.note && (
           <div className="order-section">
-            <h3>📝 Ghi chú</h3>
+            <h3>Ghi chú</h3>
             <p>{order.note}</p>
           </div>
         )}
 
         <div className="order-section">
-          <h3>💰 Tổng thanh toán</h3>
+          <h3>Tổng thanh toán</h3>
           <div className="payment-summary">
             <div className="summary-row">
               <span>Tạm tính:</span>
@@ -148,11 +147,11 @@ const OrderSuccess = () => {
               <span>{formatCurrency(order.total)}</span>
             </div>
           </div>
-          <p className="payment-method">💳 Thanh toán khi nhận hàng (COD)</p>
+          <p className="payment-method">Thanh toán khi nhận hàng (COD)</p>
         </div>
 
         <div className="order-section">
-          <h3>🕐 Thời gian</h3>
+          <h3>Thời gian</h3>
           <p>Đặt hàng lúc: {formatDate(order.placedAt)}</p>
         </div>
       </div>

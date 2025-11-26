@@ -139,7 +139,7 @@ const Home = () => {
             className="search-input"
           />
           <button type="submit" className="search-button">
-            🔍 Tìm kiếm
+            Tìm kiếm
           </button>
           {searchKeyword && (
             <button
@@ -236,10 +236,7 @@ const Home = () => {
                         {formatPrice(product.price)}
                       </span>
                     </div>
-                    <div className="product-rating">
-                      <span className="rating-stars">⭐</span>
-                      <span className="rating-value">4.8</span>
-                    </div>
+                    {/* rating removed */}
                   </div>
                   
                   <div className="product-footer">

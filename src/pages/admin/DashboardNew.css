@@ -191,19 +191,19 @@
 }
 
 .revenue-card .card-icon {
-  background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+  /* background removed */
 }
 
 .orders-card .card-icon {
-  background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+  /* background removed */
 }
 
 .customers-card .card-icon {
-  background: linear-gradient(135deg, #fffaf0 0%, #feebc8 100%);
+  /* background removed */
 }
 
 .products-card .card-icon {
-  background: linear-gradient(135deg, #faf5ff 0%, #e9d8fd 100%);
+  /* background removed */
 }
 
 .card-content {
@@ -215,9 +215,9 @@
 
 .card-content h3 {
   margin: 0;
-  font-size: 14px;
-  color: #718096;
-  font-weight: 500;
+  font-size: 18px;
+  color: #1a202c;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
